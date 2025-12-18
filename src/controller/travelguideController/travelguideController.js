@@ -14,7 +14,7 @@ export const uploadImage = (req, res) => {
  */
 export const createBlog = async (req, res) => {
   try {
-    const { title, slug, sections, category, keywords } = req.body;
+    const { title, subtitle, slug, sections, category, keywords } = req.body;
 
     // Generate base slug
     let baseSlug = slug || slugify(title, { lower: true, strict: true });
@@ -29,6 +29,7 @@ export const createBlog = async (req, res) => {
 
     const blog = new Blog({
       title,
+      subtitle,
       slug:baseSlug,
       category,
       keywords: keywords ? keywords.split(",").map(k => k.trim()) : [],
@@ -71,7 +72,7 @@ export const getBlogById = async (req, res) => {
  */
 export const updateBlog = async (req, res) => {
   try {
-    const { title, slug, sections, category, keywords } = req.body;
+    const { title, subtitle, slug, sections, category, keywords } = req.body;
 
     const updateData = {
       title,
