@@ -17,6 +17,8 @@ router.post(
     { name: "mainImage", maxCount: 1 },
     { name: "overviewImages", maxCount: 50 },
     { name: "adventureImages", maxCount: 200 },
+    { name: "routeImages", maxCount: 50 },       // ✅ ADD THIS
+  { name: "whenvisitImages", maxCount: 200 },  // ✅ (for month images)
   ]),
   createKilimanjarolanding
 );
@@ -30,6 +32,8 @@ router.put(
     { name: "mainImage", maxCount: 1 },
     { name: "overviewImages", maxCount: 50 },
     { name: "adventureImages", maxCount: 200 },
+    { name: "routeImages", maxCount: 50 },       // ✅ ADD THIS
+  { name: "whenvisitImages", maxCount: 200 },  // ✅ (for month images)
   ]),
   updateKilimanjarolanding
 );

@@ -16,43 +16,107 @@ const safeParse = (value) => {
 /**
  * CREATE KILIMANJARO LANDING
  */
+// export const createKilimanjarolanding = async (req, res) => {
+//   try {
+//     const formDataParsed = JSON.parse(req.body.formData);
+
+//     // Main image
+//     const mainImage = req.files?.mainImage?.[0]?.path || null;
+
+//     // Adventure images
+//     const adventureImages = req.files?.adventureImages?.map((f) => f.path) || [];
+
+//     // Overview images
+//     const overviewImages = req.files?.overviewImages?.map((f) => f.path) || [];
+
+//     // Parse arrays
+//     const parsedOverviewInfo = safeParse(req.body.overviewinfo).map((item, i) => ({
+//       ...item,
+//       image: overviewImages[i] || item.image || null,
+//     }));
+
+//     const parsedAdventure = safeParse(req.body.adventure).map((block) => ({
+//       ...block,
+//       section: block.section.map((inner, i) => ({
+//         ...inner,
+//         image: adventureImages[i] || inner.image || null,
+//       })),
+//     }));
+
+//     const parsedFaq = safeParse(req.body.faq);
+//     const parsedWhenVisit = safeParse(req.body.whenvisit);
+
+//     const newDoc = await Kilimanjarolanding.create({
+//       ...formDataParsed,
+//       image: mainImage,
+//       overviewinfo: parsedOverviewInfo,
+//       adventure: parsedAdventure,
+//       faq: parsedFaq,
+//       whenvisit: parsedWhenVisit,
+//     });
+
+//     res.status(201).json({
+//       message: "Kilimanjarolanding created successfully",
+//       data: newDoc,
+//     });
+
+//   } catch (err) {
+//     console.error("❌ CREATE ERROR:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 export const createKilimanjarolanding = async (req, res) => {
   try {
     const formDataParsed = JSON.parse(req.body.formData);
 
-    // Main image
     const mainImage = req.files?.mainImage?.[0]?.path || null;
 
-    // Adventure images
-    const adventureImages = req.files?.adventureImages?.map((f) => f.path) || [];
+    const overviewImages = req.files?.overviewImages || [];
+    const routeImages = req.files?.routeImages || [];
+    const adventureImages = req.files?.adventureImages || [];
+    const whenvisitImages = req.files?.whenvisitImages || [];
 
-    // Overview images
-    const overviewImages = req.files?.overviewImages?.map((f) => f.path) || [];
+    let adventureImgIndex = 0;
+    let whenvisitImgIndex = 0;
+    let routeImgIndex = 0;
 
-    // Parse arrays
     const parsedOverviewInfo = safeParse(req.body.overviewinfo).map((item, i) => ({
       ...item,
-      image: overviewImages[i] || item.image || null,
+      image: overviewImages[i]?.path || item.image || null,
+    }));
+
+    const parsedRoute = safeParse(req.body.route).map((item) => ({
+      ...item,
+      image: routeImages[routeImgIndex++]?.path || item.image || null,
     }));
 
     const parsedAdventure = safeParse(req.body.adventure).map((block) => ({
       ...block,
-      section: block.section.map((inner, i) => ({
+      section: block.section.map((inner) => ({
         ...inner,
-        image: adventureImages[i] || inner.image || null,
+        image: adventureImages[adventureImgIndex++]?.path || inner.image || null,
+      })),
+    }));
+
+    const parsedWhenVisit = safeParse(req.body.whenvisit).map((block) => ({
+      ...block,
+      months: block.months.map((m) => ({
+        ...m,
+        image: whenvisitImages[whenvisitImgIndex++]?.path || m.image || null,
       })),
     }));
 
     const parsedFaq = safeParse(req.body.faq);
-    const parsedWhenVisit = safeParse(req.body.whenvisit);
 
     const newDoc = await Kilimanjarolanding.create({
       ...formDataParsed,
       image: mainImage,
       overviewinfo: parsedOverviewInfo,
+      route: parsedRoute,
       adventure: parsedAdventure,
-      faq: parsedFaq,
       whenvisit: parsedWhenVisit,
+      faq: parsedFaq,
     });
 
     res.status(201).json({
@@ -98,38 +162,97 @@ export const getKilimanjarolandingById = async (req, res) => {
 /**
  * UPDATE KILIMANJARO LANDING
  */
+// export const updateKilimanjarolanding = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     let updateData = req.body;
+
+//     // Parse JSON from raw body
+//     updateData.overviewinfo = safeParse(updateData.overviewinfo);
+//     updateData.adventure = safeParse(updateData.adventure);
+//     updateData.faq = safeParse(updateData.faq);
+//     updateData.whenvisit = safeParse(updateData.whenvisit);
+
+//     const overviewImages = req.files?.overviewImages?.map((f) => f.path) || [];
+//     const adventureImages = req.files?.adventureImages?.map((f) => f.path) || [];
+
+//     if (updateData.overviewinfo) {
+//       updateData.overviewinfo = updateData.overviewinfo.map((item, i) => ({
+//         ...item,
+//         image: overviewImages[i] || item.image || null,
+//       }));
+//     }
+
+//     if (updateData.adventure) {
+//       updateData.adventure = updateData.adventure.map((block) => ({
+//         ...block,
+//         section: block.section.map((inner, i) => ({
+//           ...inner,
+//           image: adventureImages[i] || inner.image || null,
+//         })),
+//       }));
+//     }
+
+//     // update main
+//     if (req.files?.mainImage?.length) {
+//       updateData.image = req.files.mainImage[0].path;
+//     }
+
+//     const updated = await Kilimanjarolanding.findByIdAndUpdate(id, updateData, {
+//       new: true,
+//       runValidators: true,
+//     });
+
+//     res.json({ message: "Updated successfully", data: updated });
+
+//   } catch (err) {
+//     console.error("❌ UPDATE ERROR:", err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 export const updateKilimanjarolanding = async (req, res) => {
   try {
     const { id } = req.params;
-    let updateData = req.body;
+    const updateData = JSON.parse(req.body.formData || "{}");
 
-    // Parse JSON from raw body
-    updateData.overviewinfo = safeParse(updateData.overviewinfo);
-    updateData.adventure = safeParse(updateData.adventure);
-    updateData.faq = safeParse(updateData.faq);
-    updateData.whenvisit = safeParse(updateData.whenvisit);
+    const overviewImages = req.files?.overviewImages || [];
+    const routeImages = req.files?.routeImages || [];
+    const adventureImages = req.files?.adventureImages || [];
+    const whenvisitImages = req.files?.whenvisitImages || [];
 
-    const overviewImages = req.files?.overviewImages?.map((f) => f.path) || [];
-    const adventureImages = req.files?.adventureImages?.map((f) => f.path) || [];
+    let adventureImgIndex = 0;
+    let whenvisitImgIndex = 0;
+    let routeImgIndex = 0;
 
-    if (updateData.overviewinfo) {
-      updateData.overviewinfo = updateData.overviewinfo.map((item, i) => ({
-        ...item,
-        image: overviewImages[i] || item.image || null,
-      }));
-    }
+    updateData.overviewinfo = safeParse(req.body.overviewinfo).map((item, i) => ({
+      ...item,
+      image: overviewImages[i]?.path || item.image || null,
+    }));
 
-    if (updateData.adventure) {
-      updateData.adventure = updateData.adventure.map((block) => ({
-        ...block,
-        section: block.section.map((inner, i) => ({
-          ...inner,
-          image: adventureImages[i] || inner.image || null,
-        })),
-      }));
-    }
+    updateData.route = safeParse(req.body.route).map((item) => ({
+      ...item,
+      image: routeImages[routeImgIndex++]?.path || item.image || null,
+    }));
 
-    // update main
+    updateData.adventure = safeParse(req.body.adventure).map((block) => ({
+      ...block,
+      section: block.section.map((inner) => ({
+        ...inner,
+        image: adventureImages[adventureImgIndex++]?.path || inner.image || null,
+      })),
+    }));
+
+    updateData.whenvisit = safeParse(req.body.whenvisit).map((block) => ({
+      ...block,
+      months: block.months.map((m) => ({
+        ...m,
+        image: whenvisitImages[whenvisitImgIndex++]?.path || m.image || null,
+      })),
+    }));
+
+    updateData.faq = safeParse(req.body.faq);
+
     if (req.files?.mainImage?.length) {
       updateData.image = req.files.mainImage[0].path;
     }
@@ -146,7 +269,6 @@ export const updateKilimanjarolanding = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 /**
  * DELETE

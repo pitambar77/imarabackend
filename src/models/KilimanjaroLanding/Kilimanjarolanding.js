@@ -14,6 +14,12 @@ imagePublicId: { type: String },
 
 });
 
+const routeSchema = new mongoose.Schema({
+  title:{type:String},
+  description:{type:String},
+  image: String,
+imagePublicId: { type: String },
+})
 
 const adventureSchema = new mongoose.Schema({
   heading: String,
@@ -41,6 +47,8 @@ const whenvisitSchema = new mongoose.Schema({
             monthname:String,
             title:String,
             description:[contentBlockSchema],
+            image: String, // added image
+            imagePublicId: String,
         }
     ]
 })
@@ -54,6 +62,7 @@ const kilimanjarolandingSchema = new mongoose.Schema(
     imagePublicId: String,
 
     overviewinfo:[overviewinfoSchema],
+    route:[routeSchema], //add 
     adventure: [adventureSchema],
     faq:[qaSchema],
     whenvisit:[whenvisitSchema],
