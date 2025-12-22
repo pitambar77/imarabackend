@@ -12,6 +12,7 @@ import teamRoutes from "./routes/teamRoutes/teamRoutes.js"
 import aboutRoutes from "./routes/aboutRoutes/aboutRoutes.js"
 import fleetRoutes from "./routes/fleetRoutes/fleetRoutes.js"
 import kilimanjarolandingRoutes from "./routes/kilimanjarolandingRoutes/kilimanjarolandingRoutes.js"
+import zanzibarRoutes from './routes/zanzibarRoutes/zanzibarRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -28,7 +29,8 @@ app.use("/api/sustanbility", sustanbilityRoutes);
 app.use("/api/team", teamRoutes);
 app.use("/api/about", aboutRoutes);
 app.use("/api/fleet",fleetRoutes);
-app.use("/api/kilimanjarolanding",kilimanjarolandingRoutes)
+app.use("/api/kilimanjarolanding",kilimanjarolandingRoutes);
+app.use("/api/zanzibardetails",zanzibarRoutes);
 
 
 
