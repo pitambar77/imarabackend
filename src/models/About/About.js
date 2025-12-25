@@ -16,7 +16,8 @@ const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
   description: [contentBlockSchema],
-
+  image: String,
+  imagePublicId: { type: String },
 });
 
 

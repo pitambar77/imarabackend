@@ -6,15 +6,17 @@ import {
   getAllAbout,
   getAboutById,
   updateAbout,
-  deleteAbout
+  deleteAbout,
 } from "../../controller/aboutController/aboutController.js";
 
 const router = express.Router();
 
 router.post(
   "/",
+
   upload.fields([
     { name: "mainImage", maxCount: 1 },
+    { name: "overviewInfoImages", maxCount: 50 },
     { name: "adventureImages", maxCount: 200 },
   ]),
   createAbout
@@ -25,8 +27,10 @@ router.get("/:id", getAboutById);
 
 router.put(
   "/:id",
+
   upload.fields([
     { name: "mainImage", maxCount: 1 },
+    { name: "overviewInfoImages", maxCount: 50 },
     { name: "adventureImages", maxCount: 200 },
   ]),
   updateAbout
