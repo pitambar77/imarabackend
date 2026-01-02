@@ -15,6 +15,8 @@ import kilimanjarolandingRoutes from "./routes/kilimanjarolandingRoutes/kilimanj
 import zanzibarRoutes from './routes/zanzibarRoutes/zanzibarRoutes.js'
 import contactRoutes from './routes/contactRoutes/contactRoutes.js'
 import contactformkiliRoutes from './routes/contactRoutes/contactformkiliRoutes.js'
+import footerFormRoutes from './routes/contactRoutes/footerFormRoutes.js'
+
 
 dotenv.config();
 const app = express();
@@ -36,6 +38,9 @@ app.use("/api/zanzibardetails",zanzibarRoutes);
 
 app.use("/api/contact", contactRoutes);
 app.use("/api/contactformkili",contactformkiliRoutes);
+app.use("/api/footer-form", footerFormRoutes);
+
+
 
 
 
