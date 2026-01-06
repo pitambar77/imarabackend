@@ -13,7 +13,7 @@ export const submitContactForm = async (req, res) => {
 
     /* ================= EMAIL TO ADMIN ================= */
     await transporter.sendMail({
-      from: `"Imara kileleni Safari" <${process.env.MAIL_USER}>`,
+      from: `"Imara kileleni Safari" <info@imarakilelenisafaris.com>`,
       to: process.env.ADMIN_EMAIL,
       subject: "New Tour Enquiry Received",
       html: bookingEmailTemplate({
@@ -24,7 +24,7 @@ export const submitContactForm = async (req, res) => {
 
     /* ================= THANK YOU EMAIL TO USER ================= */
     await transporter.sendMail({
-      from: `"Imara kileleni Safari" <${process.env.MAIL_USER}>`,
+      from: `"Imara kileleni Safari" <info@imarakilelenisafaris.com>`,
       to: data.email,
       subject: "Thank you for contacting Imara kileleni Safari",
       html: bookingEmailTemplate({

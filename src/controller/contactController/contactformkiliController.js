@@ -24,7 +24,7 @@ export const submitContactForm = async (req, res) => {
 
     /* ================= EMAIL TO ADMIN ================= */
     await transporter.sendMail({
-      from: `"Website Contact" <${process.env.MAIL_USER}>`,
+      from: `"Website Contact" <info@imarakilelenisafaris.com>`,
       to: process.env.ADMIN_EMAIL,
       subject: "New Contact Form Submission",
       html: `
@@ -38,7 +38,7 @@ export const submitContactForm = async (req, res) => {
 
     /* ================= THANK YOU EMAIL TO USER ================= */
     await transporter.sendMail({
-      from: `"Imara Kileleni Safaris" <${process.env.MAIL_USER}>`,
+      from: `"Imara Kileleni Safaris" <info@imarakilelenisafaris.com>`,
       to: email,
       subject: "Thank you for contacting us",
       html: `

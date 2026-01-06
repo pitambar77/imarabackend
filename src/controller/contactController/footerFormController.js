@@ -22,7 +22,7 @@ export const submitFooterForm = async (req, res) => {
 
     /* ================= ADMIN EMAIL ================= */
     await transporter.sendMail({
-      from: `"Website Footer Signup" <${process.env.MAIL_USER}>`,
+      from: `"Website Footer Signup" <info@imarakilelenisafaris.com>`,
       to: process.env.ADMIN_EMAIL,
       subject: "New Footer Subscription",
       html: `
@@ -34,7 +34,7 @@ export const submitFooterForm = async (req, res) => {
 
     /* ================= USER EMAIL ================= */
     await transporter.sendMail({
-      from: `"Imara Kileleni Safaris" <${process.env.MAIL_USER}>`,
+      from: `"Imara Kileleni Safaris" <info@imarakilelenisafaris.com>`,
       to: email,
       subject: "Thanks for subscribing!",
       html: `
