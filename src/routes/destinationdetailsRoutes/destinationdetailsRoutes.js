@@ -29,6 +29,7 @@ router.put(
   "/:id",
   upload.fields([
     { name: "mainImage", maxCount: 1 },
+     { name: "landingImage", maxCount: 1 }, // ✅ ADD THIS
     { name: "overviewImages", maxCount: 10 },
     { name: "highlightImages", maxCount: 10 },
     { name: "migrationImages", maxCount: 10 },

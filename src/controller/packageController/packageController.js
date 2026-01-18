@@ -204,6 +204,7 @@ export const createPackage = async (req, res) => {
     const experienceImages = req.files?.experienceImages || [];
     const includeImages = req.files?.includeImages || [];
     const excludeImages = req.files?.excludeImages || [];
+    
 
     /* ---------- ITINERARY ---------- */
     const itinerary = safeParse(req.body.itinerary).map((itineraryItem) => ({
@@ -213,6 +214,8 @@ export const createPackage = async (req, res) => {
         image: itineraryImages[idx]?.path || sec.image || null,
       })) || [],
     }));
+
+
 
     /* ---------- EXPERIENCE ---------- */
     const experience = safeParse(req.body.experience).map((exp) => ({
@@ -293,6 +296,10 @@ export const updatePackage = async (req, res) => {
     const includeImages = req.files?.includeImages || [];
     const excludeImages = req.files?.excludeImages || [];
 
+
+   
+
+
     /* ---------- ITINERARY ---------- */
     if (req.body.itinerary) {
       updateData.itinerary = safeParse(req.body.itinerary).map((item) => ({
@@ -303,6 +310,8 @@ export const updatePackage = async (req, res) => {
         })) || [],
       }));
     }
+
+
 
     /* ---------- EXPERIENCE ---------- */
     if (req.body.experience) {
@@ -362,6 +371,7 @@ export const deletePackage = async (req, res) => {
     if (doc.imagePublicId) {
       await cloudinary.uploader.destroy(doc.imagePublicId);
     }
+  
 
     await Package.findByIdAndDelete(req.params.id);
     res.json({ message: "✅ Package deleted successfully" });

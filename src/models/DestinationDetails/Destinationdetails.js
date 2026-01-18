@@ -162,6 +162,8 @@ const destinationdetailsSchema = new mongoose.Schema(
     destination: String,
     image: String,
     imagePublicId: String,
+    landingImage:String, // add new landing image field
+    landingImagePublicId: String,
 
     aboutBooking: [qaSchema],
     highlight: [highlightsSchema],

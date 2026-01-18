@@ -20,6 +20,7 @@ const itineraryItemSchema = new mongoose.Schema({
       accommodationName: { type: String },
       image: { type: String },
       imagePublicId: { type: String },
+      
     },
   ],
 });
