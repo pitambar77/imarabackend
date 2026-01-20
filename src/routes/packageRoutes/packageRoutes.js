@@ -46,8 +46,8 @@ router.post(
   "/",
   upload.fields([
     { name: "mainImage", maxCount: 1 },
+    { name: "landingImage", maxCount: 1 }, // ✅ added
     { name: "itineraryImages", maxCount: 200 },
-
     { name: "experienceImages", maxCount: 200 },
     { name: "includeImages", maxCount: 50 },
     { name: "excludeImages", maxCount: 50 },
@@ -66,8 +66,8 @@ router.put(
   "/:id",
   upload.fields([
     { name: "mainImage", maxCount: 1 },
+    { name: "landingImage", maxCount: 1 }, // ✅ added
     { name: "itineraryImages", maxCount: 200 },
-
     { name: "experienceImages", maxCount: 200 },
     { name: "includeImages", maxCount: 50 },
     { name: "excludeImages", maxCount: 50 },

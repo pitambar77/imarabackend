@@ -51,8 +51,6 @@ const excludeSchema = new mongoose.Schema({
   imagePublicId: { type: String },
 });
 
-
-
 const packageSchema = new mongoose.Schema(
   {
     //   destination: { type: mongoose.Schema.Types.ObjectId, ref: "Destination" },
@@ -63,6 +61,8 @@ const packageSchema = new mongoose.Schema(
     endLocation: String,
     image: String,
     imagePublicId: String,
+    landingImage:String, // new added
+    landingImagePublicId:String, 
     duration: String,
     price: String,
     maxpeople: String,
@@ -73,7 +73,6 @@ const packageSchema = new mongoose.Schema(
     transport:String,
     accomoDay:String,
     accomoNight:String,
-
     itinerary: [itineraryItemSchema],
     experience: [experienceSchema],
     include: [includeSchema],

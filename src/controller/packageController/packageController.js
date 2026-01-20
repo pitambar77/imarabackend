@@ -199,6 +199,10 @@ export const createPackage = async (req, res) => {
     /* ---------- MAIN IMAGE ---------- */
     const mainImage = req.files?.mainImage?.[0]?.path || null;
 
+     /* ---------- LANDING IMAGE ---------- */
+    const landingImage = req.files?.landingImage?.[0]?.path || null;
+
+
     /* ---------- IMAGE GROUPS ---------- */
     const itineraryImages = req.files?.itineraryImages || [];
     const experienceImages = req.files?.experienceImages || [];
@@ -241,6 +245,7 @@ export const createPackage = async (req, res) => {
     const newPackage = await Package.create({
       ...formData,
       image: mainImage,
+      landingImage: landingImage,
       itinerary,
       experience,
       include,
@@ -344,6 +349,11 @@ export const updatePackage = async (req, res) => {
       updateData.image = req.files.mainImage[0].path;
     }
 
+    /* ---------- LANDING IMAGE ---------- */
+    if (req.files?.landingImage?.length) {
+      updateData.landingImage = req.files.landingImage[0].path;
+    }
+
     const updated = await Package.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
@@ -372,6 +382,9 @@ export const deletePackage = async (req, res) => {
       await cloudinary.uploader.destroy(doc.imagePublicId);
     }
   
+    if (doc.landingImagePublicId) {
+      await cloudinary.uploader.destroy(doc.landingImagePublicId);
+    }
 
     await Package.findByIdAndDelete(req.params.id);
     res.json({ message: "✅ Package deleted successfully" });
