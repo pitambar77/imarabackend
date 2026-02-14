@@ -1,6 +1,7 @@
 import Travelgroup from "../../models/Traelgroup/Travelgroup.js";
 import cloudinary from "../../config/cloudinary.js";
 import slugify from "slugify";
+import Seo from "../../models/Seo/Seo.js";
 
 // Safely parse JSON fields
 const safeParse = (value) => {
@@ -82,13 +83,25 @@ export const getAllTravelgroups = async (req, res) => {
 
 /**
  * GET SINGLE
+ * ===========================
  */
 export const getTravelgroupById = async (req, res) => {
   try {
     const item = await Travelgroup.findById(req.params.id);
     if (!item) return res.status(404).json({ message: "Record not found" });
 
-    res.json(item);
+     const seoData = await Seo.findOne({
+          referenceId: item._id,
+          referenceType: "travelgroup",
+        });
+    
+       res.json({
+          ...item.toObject(),   // 👈 spread main document
+          seo: seoData || null,        // 👈 attach seo inside
+        });
+    
+
+    // res.json(item);
   } catch (err) {
     res.status(500).json({ message: "Error fetching record", error: err.message });
   }
@@ -154,6 +167,11 @@ export const deleteTravelgroup = async (req, res) => {
     if (item.imagePublicId) {
       await cloudinary.uploader.destroy(item.imagePublicId);
     }
+
+    await Seo.deleteOne({
+          referenceId: item.id,
+          referenceType: "travelgroup",
+        });
 
     await Travelgroup.findByIdAndDelete(req.params.id);
 

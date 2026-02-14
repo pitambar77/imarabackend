@@ -1,7 +1,6 @@
-
-
 import Destinationdetails from "../../models/DestinationDetails/Destinationdetails.js";
 import cloudinary from "../../config/cloudinary.js";
+import Seo from "../../models/Seo/Seo.js";
 
 /* ================= HELPERS ================= */
 
@@ -25,9 +24,8 @@ export const createDestinationdetails = async (req, res) => {
     const mainImagePublicId = req.files?.mainImage?.[0]?.filename || null;
 
     /* ---------- LANDING IMAGE ---------- */
-const landingImage = req.files?.landingImage?.[0]?.path || null;
-const landingImagePublicId = req.files?.landingImage?.[0]?.filename || null;
-
+    const landingImage = req.files?.landingImage?.[0]?.path || null;
+    const landingImagePublicId = req.files?.landingImage?.[0]?.filename || null;
 
     /* ---------- FILE GROUPS ---------- */
     const overviewImages = req.files?.overviewImages || [];
@@ -107,7 +105,7 @@ const landingImagePublicId = req.files?.landingImage?.[0]?.filename || null;
       image: mainImage,
       imagePublicId: mainImagePublicId,
       landingImage,
-  landingImagePublicId,
+      landingImagePublicId,
       overviewinfo,
       highlight,
       migration,
@@ -120,7 +118,6 @@ const landingImagePublicId = req.files?.landingImage?.[0]?.filename || null;
       message: "Destination details created successfully",
       data: destination,
     });
-
   } catch (err) {
     console.error("❌ CREATE ERROR:", err);
     res.status(500).json({ message: err.message });
@@ -140,11 +137,33 @@ export const getAllDestinationdetails = async (req, res) => {
 
 /* ================= GET SINGLE ================= */
 
+// export const getDestinationdetailsById = async (req, res) => {
+//   try {
+//     const data = await Destinationdetails.findById(req.params.id);
+//     if (!data) return res.status(404).json({ message: "Not found" });
+//     res.json(data);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 export const getDestinationdetailsById = async (req, res) => {
   try {
-    const data = await Destinationdetails.findById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Not found" });
-    res.json(data);
+    const destination = await Destinationdetails.findById(req.params.id);
+
+    if (!destination) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    const seo = await Seo.findOne({
+      referenceId: destination._id,
+      referenceType: "destination",
+    });
+
+    res.json({
+      ...destination.toObject(),
+      seo: seo || null,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -243,11 +262,10 @@ export const updateDestinationdetails = async (req, res) => {
     }
 
     /* ---------- LANDING IMAGE ---------- */
-if (req.files?.landingImage?.length) {
-  updateData.landingImage = req.files.landingImage[0].path;
-  updateData.landingImagePublicId = req.files.landingImage[0].filename;
-}
-
+    if (req.files?.landingImage?.length) {
+      updateData.landingImage = req.files.landingImage[0].path;
+      updateData.landingImagePublicId = req.files.landingImage[0].filename;
+    }
 
     updateData.besttime = safeParse(req.body.besttime);
     updateData.aboutBooking = safeParse(req.body.qa);
@@ -258,7 +276,6 @@ if (req.files?.landingImage?.length) {
     });
 
     res.json({ message: "Destination updated successfully", data: updated });
-
   } catch (err) {
     console.error("❌ UPDATE ERROR:", err);
     res.status(500).json({ message: err.message });
@@ -296,14 +313,17 @@ export const deleteDestinationdetails = async (req, res) => {
     }
 
     if (data.landingImagePublicId) {
-  await cloudinary.uploader.destroy(data.landingImagePublicId);
-}
+      await cloudinary.uploader.destroy(data.landingImagePublicId);
+    }
 
+    await Seo.deleteOne({
+      referenceId: req.params.id,
+      referenceType: "destination",
+    });
 
     await Destinationdetails.findByIdAndDelete(req.params.id);
 
     res.json({ message: "Destination deleted successfully" });
-
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
