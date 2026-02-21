@@ -19,7 +19,7 @@ import footerFormRoutes from './routes/contactRoutes/footerFormRoutes.js'
 import kiliformRoutes from './routes/landingpageRoutes/kiliformRoutes.js'
 import safariformRoutes from './routes/landingpageRoutes/safariformRoutes.js'
 import seoRoutes from "./routes/seoRoutes/seoRoutes.js";
-
+import sitemapRoutes from "./routes/sitemapRoutes.js";
 
 
 
@@ -55,6 +55,8 @@ app.use("/api/kiliform",kiliformRoutes);
 app.use("/api/safariform",safariformRoutes);
 
 app.use("/api/seo", seoRoutes);
+
+app.use("/", sitemapRoutes);
 
 
 

@@ -1,5 +1,3 @@
-
-
 // above is corrected
 
 import mongoose from "mongoose";
@@ -73,11 +71,16 @@ const destinationdetailsSchema = new mongoose.Schema(
   {
     //   destination: { type: mongoose.Schema.Types.ObjectId, ref: "Destination" },
     title: String,
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     subtitle: String,
     destination: String,
     image: String,
     imagePublicId: String,
-    landingImage:String, // add new landing image field
+    landingImage: String, // add new landing image field
     landingImagePublicId: String,
 
     aboutBooking: [qaSchema],
@@ -87,7 +90,7 @@ const destinationdetailsSchema = new mongoose.Schema(
     migration: [migrationSchema],
     adventure: [adventureSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Destinationdetails", destinationdetailsSchema);

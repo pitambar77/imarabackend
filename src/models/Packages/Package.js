@@ -54,7 +54,13 @@ const excludeSchema = new mongoose.Schema({
 const packageSchema = new mongoose.Schema(
   {
     //   destination: { type: mongoose.Schema.Types.ObjectId, ref: "Destination" },
+
     destination:String,
+    slug: {
+  type: String,
+  required: true,
+  unique: true,
+},
     title: String,
     subtitle: String,
     startLocation: String,
