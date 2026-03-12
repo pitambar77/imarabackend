@@ -20,7 +20,7 @@ import kiliformRoutes from './routes/landingpageRoutes/kiliformRoutes.js'
 import safariformRoutes from './routes/landingpageRoutes/safariformRoutes.js'
 import seoRoutes from "./routes/seoRoutes/seoRoutes.js";
 import sitemapRoutes from "./routes/sitemapRoutes.js";
-
+import authRoutes from "./routes/authRoutes.js";
 
 
 
@@ -57,6 +57,7 @@ app.use("/api/safariform",safariformRoutes);
 app.use("/api/seo", seoRoutes);
 
 app.use("/", sitemapRoutes);
+app.use("/api/auth", authRoutes);
 
 
 
