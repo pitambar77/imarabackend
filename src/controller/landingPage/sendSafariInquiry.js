@@ -23,6 +23,11 @@ const sendSafariInquiry = async (req, res) => {
       throw new Error("ADMIN_EMAIL not defined");
     }
 
+     /* ================= HANDLE DESTINATION ARRAY ================= */
+    const destinationText = Array.isArray(destination)
+      ? destination.join(", ")
+      : destination;
+
 
     /* ================= SEND TO ZOHO CRM ================= */
 
@@ -40,7 +45,7 @@ try {
           Phone: number,
           Description: message,
           Residency_Country: country,
-          Destination: destination,
+          Destination: destinationText,
           Safari_Days: safari_days,
           Safari_Type: safari_type,
           Arrival_Date: start_date,
@@ -102,7 +107,7 @@ Imara Kileleni Safaris
 
 <h3>Safari Details</h3>
 <ul>
-<li><strong>Preferred Destiation:</strong> ${destination}</li>
+<li><strong>Preferred Destiation:</strong> ${destinationText}</li>
 <li><strong>Duration:</strong> ${safari_days}</li>
 <li><strong>Safari Style:</strong> ${safari_type}</li>
 <li><strong>Travel Date:</strong> ${start_date}</li>
@@ -206,7 +211,7 @@ ${message || "No message provided"}
               </h3>
 
               <ul style="padding-left:20px;">
-                <li><strong>Preferred destination:</strong> ${destination}</li>
+                <li><strong>Preferred destination:</strong> ${destinationText}</li>
                 <li><strong>Safari Duration:</strong> ${safari_days}</li>
                 <li><strong>Safari Style:</strong> ${safari_type}</li>
                 <li><strong>Expected Travel Date:</strong> ${start_date}</li>
