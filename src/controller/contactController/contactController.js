@@ -1,8 +1,8 @@
-
-
+import axios from "axios";
 import Contact from "../../models/Contact/Contact.js";
 import transporter from "../../config/mailer.js";
 import { bookingEmailTemplate } from "../../utils/emailTemplate.js";
+import { getZohoAccessToken } from "../../utils/zohoToken.js";
 
 export const submitContactForm = async (req, res) => {
   try {
@@ -10,6 +10,37 @@ export const submitContactForm = async (req, res) => {
 
     /* ================= SAVE TO DB ================= */
     const contact = await Contact.create(data);
+
+    /* ================= SEND TO ZOHO CRM ================= */
+
+    const accessToken = await getZohoAccessToken();
+
+    await axios.post(
+      "https://www.zohoapis.com/crm/v2/Leads",
+      {
+        data: [
+          {
+            Last_Name: data.fullName,
+            Email: data.email,
+            Phone: data.phone,
+            Country: data.country,
+            Description: data.message,
+            Travel_Type: data.travelType,
+            Arrival_Date: data.arrivalDate,
+            Departure_Date: data.departureDate,
+            Total_Days: data.totalDays,
+
+            Adults: data.adults,
+            Children: data.children,
+          },
+        ],
+      },
+      {
+        headers: {
+          Authorization: `Zoho-oauthtoken ${accessToken}`,
+        },
+      },
+    );
 
     /* ================= EMAIL TO ADMIN ================= */
     await transporter.sendMail({
