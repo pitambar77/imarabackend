@@ -1,4 +1,6 @@
 import transporter from "../../config/mailer.js";
+import axios from "axios";
+import { getZohoAccessToken } from "../../utils/zohoToken.js";
 
 const sendSafariInquiry = async (req, res) => {
   try {
@@ -20,6 +22,50 @@ const sendSafariInquiry = async (req, res) => {
     if (!process.env.ADMIN_EMAIL) {
       throw new Error("ADMIN_EMAIL not defined");
     }
+
+
+    /* ================= SEND TO ZOHO CRM ================= */
+
+try {
+  const accessToken = await getZohoAccessToken();
+
+  const zohoResponse = await axios.post(
+    "https://www.zohoapis.com/crm/v2/Leads",
+    {
+      data: [
+        {
+          Last_Name: last_name || "Safari Inquiry",
+          First_Name: first_name,
+          Email: email,
+          Phone: number,
+          Description: message,
+
+          // Residence_Country: country,
+          // Safari_Destination: destination,
+          // Safari_Days: safari_days,
+          // Safari_Type: safari_type,
+          // Arrival_Date: start_date,
+
+          Adults: adults,
+          Children: child,
+        },
+      ],
+    },
+    {
+      headers: {
+        Authorization: `Zoho-oauthtoken ${accessToken}`,
+      },
+    }
+  );
+
+  console.log("Zoho Lead Created:", zohoResponse.data);
+
+} catch (zohoError) {
+  console.error(
+    "Zoho CRM Error:",
+    zohoError.response?.data || zohoError.message
+  );
+}
 
     
 
