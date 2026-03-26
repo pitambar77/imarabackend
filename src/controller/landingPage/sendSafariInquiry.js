@@ -34,20 +34,19 @@ try {
     {
       data: [
         {
-          Last_Name: last_name || "Safari Inquiry",
+          Last_Name: last_name,
           First_Name: first_name,
           Email: email,
           Phone: number,
           Description: message,
-
-          // Residence_Country: country,
-          // Safari_Destination: destination,
-          // Safari_Days: safari_days,
-          // Safari_Type: safari_type,
-          // Arrival_Date: start_date,
-
+          Residency_Country: country,
+          Destination: destination,
+          Safari_Days: safari_days,
+          Safari_Type: safari_type,
+          Arrival_Date: start_date,
           Adults: adults,
           Children: child,
+          Lead_Source:"Safari Inquiry Form "
         },
       ],
     },
