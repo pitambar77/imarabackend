@@ -28,7 +28,7 @@ const sendSafariInquiry = async (req, res) => {
     const adminMail = {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
       to: process.env.ADMIN_EMAIL,
-      replyTo: contact.email,
+      replyTo: email,
       subject: "New Safari Inquiry Received",
       html: `
 <!DOCTYPE html>
@@ -103,7 +103,7 @@ ${message || "No message provided"}
     /* ================= CUSTOMER CONFIRMATION ================= */
     const customerMail = {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
-      to: contact.email,
+      to:email,
       subject: "Thank you for your Safari Inquiry",
       html: `
 <!DOCTYPE html>
