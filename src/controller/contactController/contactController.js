@@ -13,70 +13,70 @@ export const submitContactForm = async (req, res) => {
 
     /* ================= SEND TO ZOHO CRM ================= */
 
-    const accessToken = await getZohoAccessToken();
+    // const accessToken = await getZohoAccessToken();
 
-    await axios.post(
-      "https://www.zohoapis.com/crm/v2/Leads",
-      {
-        data: [
-          {
-            Last_Name: data.fullName,
-            Email: data.email,
-            Phone: data.phone,
-            Residence_Country: data.country,
-            Description: data.message,
-            Travel_Type: data.travelType,
-            Arrival_Date: data.arrivalDate,
-            Departure_Date: data.departureDate,
-            Total_Days: data.totalDays,
-            Adults: data.adults,
-            Children: data.children,
-          },
-        ],
-      },
-      {
-        headers: {
-          Authorization: `Zoho-oauthtoken ${accessToken}`,
-        },
-      },
-    );
-
-    // try {
-    //   const accessToken = await getZohoAccessToken();
-
-    //   const zohoResponse = await axios.post(
-    //     "https://www.zohoapis.com/crm/v2/Leads",
-    //     {
-    //       data: [
-    //         {
-    //           Last_Name: data.fullName,
-    //           Email: data.email,
-    //           Phone: data.phone,
-    //           Residence_Country: data.country,
-    //           Description: data.message,
-    //           Travel_Type: data.travelType,
-    //           Arrival_Date: data.arrivalDate,
-    //           Departure_Date: data.departureDate,
-    //           Total_Days: data.totalDays,
-    //           Adults: data.adults,
-    //           Children: data.children,
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Zoho-oauthtoken ${accessToken}`,
+    // await axios.post(
+    //   "https://www.zohoapis.com/crm/v2/Leads",
+    //   {
+    //     data: [
+    //       {
+    //         Last_Name: data.fullName,
+    //         Email: data.email,
+    //         Phone: data.phone,
+    //         Residence_Country: data.country,
+    //         Description: data.message,
+    //         Travel_Type: data.travelType,
+    //         Arrival_Date: data.arrivalDate,
+    //         Departure_Date: data.departureDate,
+    //         Total_Days: data.totalDays,
+    //         Adults: data.adults,
+    //         Children: data.children,
     //       },
+    //     ],
+    //   },
+    //   {
+    //     headers: {
+    //       Authorization: `Zoho-oauthtoken ${accessToken}`,
     //     },
-    //   );
+    //   },
+    // );
 
-    //   console.log("Zoho Lead Created:", zohoResponse.data);
-    // } catch (zohoError) {
-    //   console.error(
-    //     "Zoho Error:",
-    //     zohoError.response?.data || zohoError.message,
-    //   );
-    // }
+    try {
+      const accessToken = await getZohoAccessToken();
+
+      const zohoResponse = await axios.post(
+        "https://www.zohoapis.com/crm/v2/Leads",
+        {
+          data: [
+            {
+              Last_Name: data.fullName,
+              Email: data.email,
+              Phone: data.phone,
+              Residence_Country: data.country,
+              Description: data.message,
+              Travel_Type: data.travelType,
+              Arrival_Date: data.arrivalDate,
+              Departure_Date: data.departureDate,
+              Total_Days: data.totalDays,
+              Adults: data.adults,
+              Children: data.children,
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Zoho-oauthtoken ${accessToken}`,
+          },
+        },
+      );
+
+      console.log("Zoho Lead Created:", zohoResponse.data);
+    } catch (zohoError) {
+      console.error(
+        "Zoho Error:",
+        zohoError.response?.data || zohoError.message,
+      );
+    }
 
     /* ================= EMAIL TO ADMIN ================= */
     await transporter.sendMail({

@@ -3,16 +3,28 @@ import transporter from "../../config/mailer.js";
 const sendSafariInquiry = async (req, res) => {
   try {
     const {
-      parks,
-      planningDays,
-      safariStyle,
-      travelDate,
-      contact,
+      destination,
+      safari_days,
+      safari_type,
+      start_date,
+      first_name,
+      last_name,
+      email,
+      country,
+      adults,
+      child,
+      number,
+      message,
     } = req.body;
 
     if (!process.env.ADMIN_EMAIL) {
       throw new Error("ADMIN_EMAIL not defined");
     }
+
+      const destinationText = Array.isArray(destination)
+      ? destination.join(", ")
+      : destination;
+
 
     /* ================= ADMIN EMAIL ================= */
     const adminMail = {
@@ -47,23 +59,29 @@ Imara Kileleni Safaris
 
 <h3>Safari Details</h3>
 <ul>
-<li><strong>Preferred Parks:</strong> ${parks.join(", ")}</li>
-<li><strong>Duration:</strong> ${planningDays}</li>
-<li><strong>Safari Style:</strong> ${safariStyle}</li>
-<li><strong>Travel Date:</strong> ${travelDate}</li>
+<li><strong>Preferred Destiation:</strong> ${destinationText}</li>
+<li><strong>Duration:</strong> ${safari_days}</li>
+<li><strong>Safari Style:</strong> ${safari_type}</li>
+<li><strong>Travel Date:</strong> ${start_date}</li>
 </ul>
 
 <h3>Guest Information</h3>
 <ul>
-<li><strong>Name:</strong> ${contact.fullName}</li>
-<li><strong>Email:</strong> ${contact.email}</li>
-<li><strong>Phone:</strong> ${contact.countryCode} ${contact.phone}</li>
-<li><strong>Number of People:</strong> ${contact.people}</li>
+<li><strong>First Name:</strong> ${first_name}</li>
+<li><strong>Last Name:</strong> ${last_name}</li>
+
+<li><strong>Email:</strong> ${email}</li>
+<li><strong>Phone:</strong>  ${number}</li>
+<li><strong>Country :</strong> ${country} </li>
+
+<li><strong>Number of Adault:</strong> ${adults}</li>
+<li><strong>Number of Child:</strong> ${child}</li>
+
 </ul>
 
 <h3>Client Message</h3>
 <p style="background:#f9f9f9;padding:15px;border-left:4px solid #d6b48c;">
-${contact.message || "No message provided"}
+${message || "No message provided"}
 </p>
 
 <p>Regards,<br/><strong>Website Inquiry System</strong></p>
@@ -130,7 +148,7 @@ ${contact.message || "No message provided"}
             <td style="padding:25px;color:#333;">
               
               <h2 style="color:#d87028;margin-top:0;">
-                Thank you, ${contact.fullName}!
+                Thank you, ${first_name}!
               </h2>
 
               <p>
@@ -145,10 +163,10 @@ ${contact.message || "No message provided"}
               </h3>
 
               <ul style="padding-left:20px;">
-                <li><strong>Preferred Parks:</strong> ${parks.join(", ")}</li>
-                <li><strong>Safari Duration:</strong> ${planningDays}</li>
-                <li><strong>Safari Style:</strong> ${safariStyle}</li>
-                <li><strong>Expected Travel Date:</strong> ${travelDate}</li>
+                <li><strong>Preferred destination:</strong> ${destinationText}</li>
+                <li><strong>Safari Duration:</strong> ${safari_days}</li>
+                <li><strong>Safari Style:</strong> ${safari_type}</li>
+                <li><strong>Expected Travel Date:</strong> ${start_date}</li>
               </ul>
 
               <p style="margin-top:20px;">
