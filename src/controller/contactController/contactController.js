@@ -41,6 +41,8 @@ export const submitContactForm = async (req, res) => {
       },
     );
 
+    console.log("Zoho response:", zohoResponse.data);
+
     /* ================= EMAIL TO ADMIN ================= */
     await transporter.sendMail({
       from: `"Imara kileleni Safari" <${process.env.MAIL_USER}>`,
