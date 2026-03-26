@@ -21,9 +21,7 @@ const sendSafariInquiry = async (req, res) => {
       throw new Error("ADMIN_EMAIL not defined");
     }
 
-      const destinationText = Array.isArray(destination)
-      ? destination.join(", ")
-      : destination;
+    
 
 
     /* ================= ADMIN EMAIL ================= */
@@ -59,7 +57,7 @@ Imara Kileleni Safaris
 
 <h3>Safari Details</h3>
 <ul>
-<li><strong>Preferred Destiation:</strong> ${destinationText}</li>
+<li><strong>Preferred Destiation:</strong> ${destination}</li>
 <li><strong>Duration:</strong> ${safari_days}</li>
 <li><strong>Safari Style:</strong> ${safari_type}</li>
 <li><strong>Travel Date:</strong> ${start_date}</li>
@@ -163,7 +161,7 @@ ${message || "No message provided"}
               </h3>
 
               <ul style="padding-left:20px;">
-                <li><strong>Preferred destination:</strong> ${destinationText}</li>
+                <li><strong>Preferred destination:</strong> ${destination}</li>
                 <li><strong>Safari Duration:</strong> ${safari_days}</li>
                 <li><strong>Safari Style:</strong> ${safari_type}</li>
                 <li><strong>Expected Travel Date:</strong> ${start_date}</li>
