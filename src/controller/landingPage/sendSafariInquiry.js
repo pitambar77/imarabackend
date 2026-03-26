@@ -5,7 +5,6 @@ import { getZohoAccessToken } from "../../utils/zohoToken.js";
 const sendSafariInquiry = async (req, res) => {
   try {
     const {
-      destination,
       safari_days,
       safari_type,
       start_date,
@@ -18,6 +17,8 @@ const sendSafariInquiry = async (req, res) => {
       number,
       message,
     } = req.body;
+
+    const destination = req.body.destination || req.body["destination[]"];
 
     if (!process.env.ADMIN_EMAIL) {
       throw new Error("ADMIN_EMAIL not defined");
