@@ -22,7 +22,7 @@ import seoRoutes from "./routes/seoRoutes/seoRoutes.js";
 import sitemapRoutes from "./routes/sitemapRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import zohocallbackRoutes from "./routes/zohocallbackRoutes/zohocallbackRoutes.js"
-
+import enquiryForm from "./routes/landingpageRoutes/enquiryForm.js";
 
 
 dotenv.config();
@@ -60,6 +60,7 @@ app.use("/api/seo", seoRoutes);
 app.use("/", sitemapRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/zoho", zohocallbackRoutes);
+app.use("/api/enquiry", enquiryForm);
 
 
 
