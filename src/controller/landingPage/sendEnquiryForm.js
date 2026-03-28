@@ -5,6 +5,7 @@ import { getZohoAccessToken } from "../../utils/zohoToken.js";
 const sendEnquiryForm = async (req, res) => {
   try {
     const {
+      formType,
       name,
       phone,
       email,
@@ -100,6 +101,7 @@ Imara Kileleni Safaris
 <td style="padding:25px;color:#333;">
 
 <p><strong>New Travel Inquiry received</strong></p>
+<p><strong>Form Source:</strong> ${formType}</p>
 
 <h3>Trip Details</h3>
 <ul>
@@ -124,6 +126,7 @@ Imara Kileleni Safaris
 <p style="background:#f9f9f9;padding:15px;border-left:4px solid #d6b48c;">
 ${message || "No message provided"}
 </p>
+
 
 <p>
 Regards,<br/>
