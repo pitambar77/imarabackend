@@ -2,7 +2,7 @@ import transporter from "../../config/mailer.js";
 import axios from "axios";
 import { getZohoAccessToken } from "../../utils/zohoToken.js";
 
-const sendEnquiryForm = async (req, res) => {
+const sendItneraryForm = async (req, res) => {
   try {
     const {
       formType,
@@ -12,7 +12,7 @@ const sendEnquiryForm = async (req, res) => {
       country,
       adults,
       children,
-      destination,
+      packageName,
       tourType,
       travelDate,
       days,
@@ -37,14 +37,14 @@ const sendEnquiryForm = async (req, res) => {
               Email: email,
               Phone: phone,
               Residency_Country: country,
-              Destination_Package: destination,
+              Destination_Package: packageName,
               Tour_Type: tourType,
               Travel_Days: days,
               Arrival_Date: travelDate,
-              Adults: adults,
+              Adaults: adults,
               Children: children,
               Description: message,
-              Lead_Source: "Website Tailormade form Form",
+              Lead_Source: "Website Itinerary form Form",
             },
           ],
         },
@@ -105,7 +105,7 @@ Imara Kileleni Safaris
 
 <h3>Trip Details</h3>
 <ul>
-<li><strong>Destination:</strong> ${destination}</li>
+<li><strong>Destination/Package:</strong> ${packageName}</li>
 <li><strong>Tour Type:</strong> ${tourType}</li>
 <li><strong>Travel Date:</strong> ${travelDate}</li>
 <li><strong>Duration:</strong> ${days} Days</li>
@@ -210,7 +210,7 @@ Your Trip Details
 </h3>
 
 <ul style="padding-left:20px;">
-<li><strong>Destination:</strong> ${destination}</li>
+<li><strong>Destination/Package:</strong> ${packageName}</li>
 <li><strong>Tour Type:</strong> ${tourType}</li>
 <li><strong>Travel Date:</strong> ${travelDate}</li>
 <li><strong>Duration:</strong> ${days} Days</li>
@@ -262,4 +262,4 @@ Tanzania
   }
 };
 
-export default sendEnquiryForm;
+export default sendItneraryForm;
