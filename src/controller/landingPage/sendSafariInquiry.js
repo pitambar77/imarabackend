@@ -46,13 +46,13 @@ try {
           Phone: number,
           Description: message,
           Residency_Country: country,
-          Destination: destinationText,
-          Safari_Days: safari_days,
-          Safari_Type: safari_type,
+          Destination_Package: destinationText,
+          Travel_Days: safari_days,
+          Tour_Type: safari_type,
           Arrival_Date: start_date,
-          Adults: adults,
+          Adaults: adults,
           Children: child,
-          Lead_Source:"Safari Inquiry Form "
+          Lead_Source:"Google Ads Form "
         },
       ],
     },
