@@ -35,6 +35,10 @@ const sendSafariInquiry = async (req, res) => {
 try {
   const accessToken = await getZohoAccessToken();
 
+  const formattedDate = start_date
+  ? new Date(start_date).toISOString().split("T")[0]
+  : null;
+
   const zohoResponse = await axios.post(
     "https://www.zohoapis.com/crm/v2/Leads",
     {
@@ -49,7 +53,7 @@ try {
           Destination_Package: destinationText,
           // Travel_Days:Number(safari_days),
           Tour_Type: safari_type,
-          // Arrival_Date: start_date,
+           Arrival_Date: formattedDate,
           Adaults:Number(adults),
           Children:Number(child),
           Lead_Source:"Google Ads Form "
