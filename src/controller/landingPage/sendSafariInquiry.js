@@ -47,7 +47,7 @@ try {
           Description: message,
           Residency_Country: country,
           Destination_Package: destinationText,
-          Travel_Days:Number(safari_days),
+          // Travel_Days:Number(safari_days),
           Tour_Type: safari_type,
           Arrival_Date: start_date,
           Adaults:Number(adults),
