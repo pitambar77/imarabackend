@@ -49,7 +49,7 @@ try {
           Destination_Package: destinationText,
           // Travel_Days:Number(safari_days),
           Tour_Type: safari_type,
-          Arrival_Date: start_date,
+          // Arrival_Date: start_date,
           Adaults:Number(adults),
           Children:Number(child),
           Lead_Source:"Google Ads Form "
