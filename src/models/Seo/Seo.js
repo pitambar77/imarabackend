@@ -18,6 +18,12 @@ const seoSchema = new mongoose.Schema(
     canonicalUrl: String,
     ogImage: String,
 
+    // ✅ ADD THIS
+    schemaMarkup: {
+      type: mongoose.Schema.Types.Mixed, // store JSON schema
+      default: null,
+    },
+
     noIndex: {
       type: Boolean,
       default: false,
