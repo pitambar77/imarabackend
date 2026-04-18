@@ -24,7 +24,8 @@ import authRoutes from "./routes/authRoutes.js";
 import zohocallbackRoutes from "./routes/zohocallbackRoutes/zohocallbackRoutes.js"
 import enquiryForm from "./routes/landingpageRoutes/enquiryForm.js";
 import itineraryForm from './routes/landingpageRoutes/itineraryForm.js'
-
+import homepageRoutes from './routes/homepageRoutes/homepageRoutes.js'
+import safarilandingRoutes from './routes/safarilandingRoutes/safarilandingRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -63,7 +64,8 @@ app.use("/api/auth", authRoutes);
 app.use("/zoho", zohocallbackRoutes);
 app.use("/api/enquiry", enquiryForm);
 app.use("/api/itinerary", itineraryForm);
-
+app.use("/api/homepage", homepageRoutes);
+app.use("/api/safarilanding", safarilandingRoutes);
 
 
 
