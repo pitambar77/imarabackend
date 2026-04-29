@@ -19,6 +19,7 @@ const overviewinfoSchema = new mongoose.Schema({
 
 const highlightsSchema = new mongoose.Schema({
   heading: String,
+  subtitle:String, //new
   section: [
     {
       title: String,
@@ -30,6 +31,7 @@ const highlightsSchema = new mongoose.Schema({
 });
 const besttimeSchema = new mongoose.Schema({
   title: String,
+  subtitle:String,//new
   section: [
     {
       month: String,
@@ -80,7 +82,7 @@ const destinationdetailsSchema = new mongoose.Schema(
     destination: String,
     image: String,
     imagePublicId: String,
-    landingImage: String, // add new landing image field
+    landingImage: String, 
     landingImagePublicId: String,
 
     aboutBooking: [qaSchema],

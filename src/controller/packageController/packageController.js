@@ -1,5 +1,3 @@
-
-
 import Package from "../../models/Packages/Package.js";
 import cloudinary from "../../config/cloudinary.js";
 import Seo from "../../models/Seo/Seo.js";
@@ -24,35 +22,33 @@ export const createPackage = async (req, res) => {
     /* ---------- MAIN IMAGE ---------- */
     const mainImage = req.files?.mainImage?.[0]?.path || null;
 
-     /* ---------- LANDING IMAGE ---------- */
+    /* ---------- LANDING IMAGE ---------- */
     const landingImage = req.files?.landingImage?.[0]?.path || null;
-
 
     /* ---------- IMAGE GROUPS ---------- */
     const itineraryImages = req.files?.itineraryImages || [];
     const experienceImages = req.files?.experienceImages || [];
     const includeImages = req.files?.includeImages || [];
     const excludeImages = req.files?.excludeImages || [];
-    
 
     /* ---------- ITINERARY ---------- */
     const itinerary = safeParse(req.body.itinerary).map((itineraryItem) => ({
       ...itineraryItem,
-      section: itineraryItem.section?.map((sec, idx) => ({
-        ...sec,
-        image: itineraryImages[idx]?.path || sec.image || null,
-      })) || [],
+      section:
+        itineraryItem.section?.map((sec, idx) => ({
+          ...sec,
+          image: itineraryImages[idx]?.path || sec.image || null,
+        })) || [],
     }));
-
-
 
     /* ---------- EXPERIENCE ---------- */
     const experience = safeParse(req.body.experience).map((exp) => ({
       ...exp,
-      section: exp.section?.map((sec, idx) => ({
-        ...sec,
-        image: experienceImages[idx]?.path || sec.image || null,
-      })) || [],
+      section:
+        exp.section?.map((sec, idx) => ({
+          ...sec,
+          image: experienceImages[idx]?.path || sec.image || null,
+        })) || [],
     }));
 
     /* ---------- INCLUDE / EXCLUDE ---------- */
@@ -81,7 +77,6 @@ export const createPackage = async (req, res) => {
       message: "✅ Package created successfully",
       package: newPackage,
     });
-
   } catch (err) {
     console.error("❌ CREATE PACKAGE ERROR:", err);
     res.status(500).json({ message: err.message });
@@ -106,16 +101,17 @@ export const getAllPackages = async (req, res) => {
 export const getPackageById = async (req, res) => {
   try {
     const packageData = await Package.findById(req.params.id);
-    if (!packageData) return res.status(404).json({ message: "Package not found" });
+    if (!packageData)
+      return res.status(404).json({ message: "Package not found" });
 
     const seoData = await Seo.findOne({
       referenceId: packageData._id,
       referenceType: "package",
     });
 
-   res.json({
-      ...packageData.toObject(),   // 👈 spread main document
-      seo: seoData || null,        // 👈 attach seo inside
+    res.json({
+      ...packageData.toObject(), // 👈 spread main document
+      seo: seoData || null, // 👈 attach seo inside
     });
 
     // res.json(data);
@@ -137,31 +133,27 @@ export const updatePackage = async (req, res) => {
     const includeImages = req.files?.includeImages || [];
     const excludeImages = req.files?.excludeImages || [];
 
-
-   
-
-
     /* ---------- ITINERARY ---------- */
     if (req.body.itinerary) {
       updateData.itinerary = safeParse(req.body.itinerary).map((item) => ({
         ...item,
-        section: item.section?.map((sec, idx) => ({
-          ...sec,
-          image: itineraryImages[idx]?.path || sec.image || null,
-        })) || [],
+        section:
+          item.section?.map((sec, idx) => ({
+            ...sec,
+            image: itineraryImages[idx]?.path || sec.image || null,
+          })) || [],
       }));
     }
-
-
 
     /* ---------- EXPERIENCE ---------- */
     if (req.body.experience) {
       updateData.experience = safeParse(req.body.experience).map((exp) => ({
         ...exp,
-        section: exp.section?.map((sec, idx) => ({
-          ...sec,
-          image: experienceImages[idx]?.path || sec.image || null,
-        })) || [],
+        section:
+          exp.section?.map((sec, idx) => ({
+            ...sec,
+            image: experienceImages[idx]?.path || sec.image || null,
+          })) || [],
       }));
     }
 
@@ -199,7 +191,6 @@ export const updatePackage = async (req, res) => {
       message: "✅ Package updated successfully",
       package: updated,
     });
-
   } catch (err) {
     console.error("❌ UPDATE PACKAGE ERROR:", err);
     res.status(500).json({ message: err.message });
@@ -217,16 +208,14 @@ export const deletePackage = async (req, res) => {
     if (doc.imagePublicId) {
       await cloudinary.uploader.destroy(doc.imagePublicId);
     }
-  
+
     if (doc.landingImagePublicId) {
       await cloudinary.uploader.destroy(doc.landingImagePublicId);
     }
 
     await Package.findByIdAndDelete(req.params.id);
     res.json({ message: "✅ Package deleted successfully" });
-
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-

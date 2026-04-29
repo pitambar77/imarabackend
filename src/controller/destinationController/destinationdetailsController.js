@@ -52,6 +52,7 @@ export const createDestinationdetails = async (req, res) => {
     let highlightImgIndex = 0;
     const highlight = safeParse(req.body.highlight).map((block) => ({
       heading: block.heading,
+      subtitle: block.subtitle,
       section: (block.section || []).map((sec) => {
         const img = highlightImages[highlightImgIndex];
         highlightImgIndex++;
@@ -203,6 +204,7 @@ export const updateDestinationdetails = async (req, res) => {
       let idx = 0;
       updateData.highlight = safeParse(req.body.highlight).map((block) => ({
         heading: block.heading,
+        subtitle: block.subtitle, 
         section: (block.section || []).map((sec) => {
           const img = highlightImages[idx];
           idx++;

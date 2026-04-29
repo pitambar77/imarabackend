@@ -15,7 +15,19 @@ const admins = [
   {
     username: "imara",
     email: "gourisankarmwspl@gmail.com",
+    password: "kileleni123",
+    role: "admin",
+  },
+  {
+    username: "imarasafaris",
+    email: "mwsplsuv@gmail.com",
     password: "kileleni!23",
+    role: "admin",
+  },
+  {
+    username: "kilelenisafari",
+    email: "pitambermajhi33@gmail.com",
+    password: "safari!23",
     role: "admin",
   },
 ];
@@ -27,10 +39,7 @@ const createAdmins = async () => {
 
     for (let adminData of admins) {
       const existingAdmin = await Admin.findOne({
-        $or: [
-          { username: adminData.username },
-          { email: adminData.email },
-        ],
+        $or: [{ username: adminData.username }, { email: adminData.email }],
       });
 
       if (existingAdmin) {
@@ -38,10 +47,7 @@ const createAdmins = async () => {
         continue;
       }
 
-      const hashedPassword = await bcrypt.hash(
-        adminData.password,
-        10
-      );
+      const hashedPassword = await bcrypt.hash(adminData.password, 10);
 
       await Admin.create({
         username: adminData.username,

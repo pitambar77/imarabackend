@@ -26,6 +26,9 @@ import enquiryForm from "./routes/landingpageRoutes/enquiryForm.js";
 import itineraryForm from './routes/landingpageRoutes/itineraryForm.js'
 import homepageRoutes from './routes/homepageRoutes/homepageRoutes.js'
 import safarilandingRoutes from './routes/safarilandingRoutes/safarilandingRoutes.js'
+import contactuspageRoutes from './routes/contactuspageRoutes/contactuspageRoutes.js'
+import blogRoutes from './routes/blogRoutes/blogRoutes.js'
+
 
 dotenv.config();
 const app = express();
@@ -66,6 +69,8 @@ app.use("/api/enquiry", enquiryForm);
 app.use("/api/itinerary", itineraryForm);
 app.use("/api/homepage", homepageRoutes);
 app.use("/api/safarilanding", safarilandingRoutes);
+app.use("/api/contactuspage", contactuspageRoutes);
+app.use("/api/imarablog", blogRoutes);
 
 
 
