@@ -5,6 +5,17 @@ const contentBlockSchema = new mongoose.Schema({
   content: { type: mongoose.Schema.Types.Mixed, required: true },
 });
 
+const qaSchema = new mongoose.Schema({
+  question: { type: String, required: true },
+  answer: [contentBlockSchema], // multiple answer parts (header, paragraph, list)
+});
+
+const faqSectionSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  subtitle: { type: String },
+  faqs: [qaSchema], // multiple questions inside one section
+});
+
 const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
@@ -51,6 +62,7 @@ const destinationlandingSchema = new mongoose.Schema(
     highlight: [highlightsSchema],
     besttime: [besttimeSchema],
     overviewinfo: [overviewinfoSchema],
+    faq:[faqSectionSchema]
   },
   { timestamps: true }
 );

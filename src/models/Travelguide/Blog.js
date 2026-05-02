@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const ListItemSchema = new mongoose.Schema(
   {
     id: String,
@@ -9,39 +8,61 @@ const ListItemSchema = new mongoose.Schema(
       {
         id: String,
         text: String,
-        children: [] // recursive structure
-      }
+        children: [], // recursive structure
+      },
     ],
   },
-  { _id: false }
+  { _id: false },
 );
 
 
-const SectionSchema = new mongoose.Schema({
-  type: { type: String },
-  text: String,
-  imageUrl: String,
-  imageAlt: String,
-  items:[ListItemSchema],
-  ctaText: String,
-  ctaTitle:String,
-  ctaHref: String,
-}, { _id: false });
+const contentBlockSchema = new mongoose.Schema({
+  type: { type: String, enum: ["header", "paragraph", "list"], required: true },
+  content: { type: mongoose.Schema.Types.Mixed, required: true },
+});
 
-const BlogSchema = new mongoose.Schema({
+const qaSchema = new mongoose.Schema({
+  question: { type: String, required: true },
+  answer: [contentBlockSchema], // multiple answer parts (header, paragraph, list)
+});
+
+const faqSectionSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  subtitle:{type:String,required:true},
-  slug: { type: String, required: true, unique: true },
+  subtitle: { type: String },
+  faqs: [qaSchema], // multiple questions inside one section
+});
 
-  category: {
-    type: String,
-    
+const SectionSchema = new mongoose.Schema(
+  {
+    type: { type: String },
+    text: String,
+    imageUrl: String,
+    imageAlt: String,
+    items: [ListItemSchema],
+    ctaText: String,
+    ctaTitle: String,
+    ctaHref: String,
   },
+  { _id: false },
+);
 
-  keywords: [{ type: String }],
-  thumbnail: { type: String },
+const BlogSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    subtitle: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
 
-  sections: [SectionSchema],
-}, { timestamps: true });
+    category: {
+      type: String,
+    },
+
+    keywords: [{ type: String }],
+    thumbnail: { type: String },
+
+    sections: [SectionSchema],
+    faq:[faqSectionSchema],
+  },
+  { timestamps: true },
+);
 
 export default mongoose.model("Blog", BlogSchema);

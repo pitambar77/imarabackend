@@ -1,6 +1,6 @@
 import express from "express";
 import upload from "../../middleware/uploads.js";
-import Blog from "../../models/Travelguide/Blog.js";
+
 import {
   uploadImage,
   createBlog,
@@ -9,6 +9,7 @@ import {
   updateBlog,
   deleteBlog,
   getRelatedBlogs,
+  getBlogBySlug,
   filterByCategory
 } from "../../controller/travelguideController/travelguideController.js";
 
@@ -21,17 +22,18 @@ router.post("/uploads", upload.single("file"), uploadImage);
 router.post("/blog", upload.single("thumbnail"), createBlog);
 router.get("/blog", getBlogs);
 
-router.get("/blog/slug/:slug", async (req, res) => {
-  try {
-    const blog = await Blog.findOne({ slug: req.params.slug });
-    if (!blog) return res.status(404).json({ error: "Not found" });
-    res.json(blog);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// router.get("/blog/slug/:slug", async (req, res) => {
+//   try {
+//     const blog = await Blog.findOne({ slug: req.params.slug });
+//     if (!blog) return res.status(404).json({ error: "Not found" });
+//     res.json(blog);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
-
+// ✅ KEEP THIS
+router.get("/blog/slug/:slug", getBlogBySlug);
 router.get("/blog/:id", getBlogById);
 router.put("/blog/:id", upload.single("thumbnail"), updateBlog);
 router.delete("/blog/:id", deleteBlog);

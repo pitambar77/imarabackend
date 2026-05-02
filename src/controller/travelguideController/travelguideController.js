@@ -2,10 +2,66 @@ import Seo from "../../models/Seo/Seo.js";
 import Blog from "../../models/Travelguide/Blog.js";
 import slugify from "slugify";
 
-
 /**
  * Upload standalone images (Cloudinary)
  */
+
+const safeParse = (value, fallback = []) => {
+  if (!value) return fallback;
+  try {
+    return typeof value === "string" ? JSON.parse(value) : value;
+  } catch {
+    return fallback;
+  }
+};
+
+const transformFaq = (faqSections) => {
+  return faqSections?.map((section) => ({
+    ...(section.toObject?.() || section),
+
+    faqs: (section.faqs || []).map((faq) => ({
+      ...(faq.toObject?.() || faq),
+
+      // ✅ ALWAYS send raw answer (for edit)
+      answer: (faq.answer || []).map((block) => ({
+        type: block.type,
+        content: block.content,
+      })),
+
+      // ✅ UI format
+      answerBlocks: (faq.answer || []).map((block) => {
+        if (block.type === "list") {
+          return {
+            type: "list",
+            items: Array.isArray(block.content)
+              ? block.content
+              : [block.content],
+          };
+        }
+
+        return {
+          type: block.type === "header" ? "heading" : block.type,
+          text: block.content,
+        };
+      }),
+    })),
+  }));
+};
+
+const formatFaq = (faqData) => {
+  return safeParse(faqData).map((section) => ({
+    title: section.title,
+    subtitle: section.subtitle || "",
+    faqs: (section.faqs || []).map((item) => ({
+      question: item.question,
+      answer: (item.answer || []).map((block) => ({
+        type: block.type,
+        content: block.content,
+      })),
+    })),
+  }));
+};
+
 export const uploadImage = (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
   return res.json({ url: req.file.path });
@@ -37,6 +93,7 @@ export const createBlog = async (req, res) => {
       keywords: keywords ? keywords.split(",").map((k) => k.trim()) : [],
       sections: sections ? JSON.parse(sections) : [],
       thumbnail: req.file ? req.file.path : null,
+      faq: formatFaq(req.body.faq),
     });
 
     await blog.save();
@@ -52,15 +109,47 @@ export const createBlog = async (req, res) => {
 /**
  * Get all blogs
  */
+// export const getBlogs = async (req, res) => {
+//   const blogs = await Blog.find().sort({ createdAt: -1 });
+//   return res.json(blogs);
+// };
+
 export const getBlogs = async (req, res) => {
   const blogs = await Blog.find().sort({ createdAt: -1 });
-  return res.json(blogs);
+
+  const transformed = blogs.map((blog) => ({
+    ...blog.toObject(),
+    faq: transformFaq(blog.faq),
+  }));
+
+  return res.json(transformed);
 };
 
 /**
  * Get single blog by ID
  * =========================
  */
+// export const getBlogById = async (req, res) => {
+//   try {
+//     const blog = await Blog.findById(req.params.id);
+//     if (!blog) return res.status(404).json({ error: "Blog not found" });
+
+//     const seoData = await Seo.findOne({
+//       referenceId: blog._id,
+//       referenceType: "blog",
+//     });
+
+//     res.json({
+//       ...blog.toObject(), // 👈 spread main document
+//       seo: seoData || null, // 👈 attach seo inside
+//     });
+
+//     // return res.json(blog);
+//   } catch {
+//     return res.status(400).json({ error: "Invalid blog ID" });
+//   }
+// };
+
 export const getBlogById = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -71,14 +160,41 @@ export const getBlogById = async (req, res) => {
       referenceType: "blog",
     });
 
-    res.json({
-      ...blog.toObject(), // 👈 spread main document
-      seo: seoData || null, // 👈 attach seo inside
-    });
+    const transformed = {
+      ...blog.toObject(),
+      faq: transformFaq(blog.faq),
+      seo: seoData || null,
+    };
 
-    // return res.json(blog);
+    res.json(transformed);
   } catch {
     return res.status(400).json({ error: "Invalid blog ID" });
+  }
+};
+
+export const getBlogBySlug = async (req, res) => {
+  try {
+    const blog = await Blog.findOne({ slug: req.params.slug });
+
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+
+    const seoData = await Seo.findOne({
+      referenceId: blog._id,
+      referenceType: "blog",
+    });
+
+    const transformed = {
+      ...blog.toObject(),
+      faq: transformFaq(blog.faq), // 🔥 IMPORTANT
+      seo: seoData || null,
+    };
+
+    res.json(transformed);
+  } catch (err) {
+    console.error("Slug fetch error:", err);
+    res.status(500).json({ error: "Failed to fetch blog" });
   }
 };
 
@@ -95,6 +211,7 @@ export const updateBlog = async (req, res) => {
       category,
       keywords: keywords ? keywords.split(",").map((k) => k.trim()) : [],
       sections: sections ? JSON.parse(sections) : [],
+      faq: formatFaq(req.body.faq),
     };
 
     if (req.file) updateData.thumbnail = req.file.path;
