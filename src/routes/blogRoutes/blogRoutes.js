@@ -37,7 +37,7 @@ router.get("/slug/:slug", getBlogBySlug);
 router.get("/id/:id", async (req, res) => {
   try {
     const blog = await (
-      await import("../../models/Blohg/Imarablog.js")
+      await import("../../models/ImaraBlog/Imarablog.js")
     ).default.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 

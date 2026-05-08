@@ -164,9 +164,22 @@ const SectionSchema = new Schema(
     },
 
     /* ===== PACKAGE ===== */
-    packageType: {
+    // packageType: {
+    //   type: String,
+    //   enum: ["safari", "kilimanjaro", "zanzibar"],
+    // },
+
+    destination: String,
+    layout: {
       type: String,
-      enum: ["safari", "kilimanjaro", "zanzibar"],
+      enum: ["grid", "slider"],
+      default: "slider",
+    },
+    btnname: String,
+    btnlink: String,
+    showArrows: {
+      type: Boolean,
+      default: true,
     },
 
     /* ===== FAQ ===== */

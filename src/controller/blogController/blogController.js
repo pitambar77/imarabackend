@@ -1,5 +1,3 @@
-
-
 import Imarablog from "../../models/ImaraBlog/Imarablog.js";
 import slugify from "slugify";
 
@@ -28,6 +26,15 @@ export const createBlog = async (req, res) => {
     // ✅ Parse JSON
     body.sections = safeParse(body.sections) || [];
     body.landingDetails = safeParse(body.landingDetails) || [];
+
+    // ✅ Parse author JSON
+    if (body.author) {
+      body.author = safeParse(body.author);
+    }
+
+    if (body.date) {
+      body.date = new Date(body.date);
+    }
 
     // ✅ Keywords → tags
     if (body.keywords) {
@@ -68,7 +75,9 @@ export const createBlog = async (req, res) => {
 ========================================= */
 export const getBlogs = async (req, res) => {
   try {
-    const blogs = await Imarablog.find().sort({ createdAt: -1 }).select("-sections"); // keep lightweight
+    const blogs = await Imarablog.find()
+      .sort({ createdAt: -1 })
+      .select("-sections"); // keep lightweight
 
     res.json({
       success: true,
@@ -128,6 +137,12 @@ export const updateBlog = async (req, res) => {
     if (req.files?.thumbnail?.[0]) {
       body.thumbnail = req.files.thumbnail[0].path;
     }
+
+    body.author = safeParse(body.author);
+
+if (body.date) {
+  body.date = new Date(body.date);
+}
 
     const blog = await Imarablog.findByIdAndUpdate(id, body, {
       new: true,
