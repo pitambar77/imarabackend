@@ -43,12 +43,12 @@ export const searchAll = async (req, res) => {
     ]);
 
     const results = [
-      ...packages.map(i => ({ ...i.toObject(), type: "package",slug: i.slug })),
-      ...safaris.map(i => ({ ...i.toObject(), type: "safari",slug: i.slug })),
+      ...packages.map(i => ({ ...i.toObject(), type: "package",label:"Packages", slug: i.slug })),
+      ...safaris.map(i => ({ ...i.toObject(), type: "safari",label: " safari",slug: i.slug })),
       ...destinations.map(i => ({ ...i.toObject(), type: "destination",slug: i.slug })),
-      ...destinationdetails.map(i => ({ ...i.toObject(), type: "destinationdetails",slug: i.slug })),
-      ...travelguides.map(i => ({ ...i.toObject(), type: "travelguide",slug: i.slug })),
-      ...travelgroups.map(i => ({ ...i.toObject(), type: "travelgroup",slug: i.slug })),
+      ...destinationdetails.map(i => ({ ...i.toObject(), type: "destinationdetails",label: "tanzania destinations",slug: i.slug })),
+      ...travelguides.map(i => ({ ...i.toObject(), type: "travelguide",label: "Travel Guide",slug: i.slug })),
+      ...travelgroups.map(i => ({ ...i.toObject(), type: "travelgroup",label: "Travel Group",slug: i.slug })),
       ...teams.map(i => ({ ...i.toObject(), type: "team" ,slug: i.slug})),
       ...abouts.map(i => ({ ...i.toObject(), type: "about",slug: i.slug })),
       ...fleets.map(i => ({ ...i.toObject(), type: "fleet",slug: i.slug })),
