@@ -2,15 +2,85 @@
 
 import mongoose from "mongoose";
 
+const { Schema } = mongoose;
+
 const contentBlockSchema = new mongoose.Schema({
   type: { type: String, enum: ["header", "paragraph", "list"], required: true },
   content: { type: mongoose.Schema.Types.Mixed, required: true },
 });
 
+// const contentBlockSchema = new mongoose.Schema({
+//   type: {
+//     type: String,
+//     enum: [
+//       // OLD TYPES
+//       "header",
+//       "paragraph",
+//       "list",
+
+//       // NEW TYPES
+//       "text",
+//       "bold",
+//       "italic",
+//       "underline",
+//       "highlight",
+//       "link",
+//       "heading",
+//       "quote",
+//       "bullet",
+//       "number",
+//     ],
+//     default: "text",
+//   },
+
+//   // OLD DATA SUPPORT
+//   content: {
+//     type: mongoose.Schema.Types.Mixed,
+//     default: "",
+//   },
+
+//   // NEW DATA SUPPORT
+//   value: {
+//     type: String,
+//     default: "",
+//   },
+
+//   // FOR LINKS
+//   url: {
+//     type: String,
+//     default: "",
+//   },
+// });
+
+/* ===========================
+   INLINE CONTENT
+=========================== */
+// const InlineContentSchema = new Schema(
+//   {
+//     type: {
+//       type: String,
+//       enum: ["text", "link", "bold", "highlight"],
+//       required: true,
+//     },
+//     value: String,
+//     url: String,
+//   },
+//   { _id: false },
+// );
+
 const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  description: [contentBlockSchema],
+  // ✅ Rich text paragraph support
+  // description: {
+  //   type: [[InlineContentSchema]],
+  //   default: [],
+  // },
+  description: {
+    type: String,
+    default: "",
+  },
+
   image: String,
   imagePublicId: { type: String },
 });
@@ -19,7 +89,7 @@ const overviewinfoSchema = new mongoose.Schema({
 
 const highlightsSchema = new mongoose.Schema({
   heading: String,
-  subtitle:String, //new
+  subtitle: String, //new
   section: [
     {
       title: String,
@@ -31,7 +101,7 @@ const highlightsSchema = new mongoose.Schema({
 });
 const besttimeSchema = new mongoose.Schema({
   title: String,
-  subtitle:String,//new
+  subtitle: String, //new
   section: [
     {
       month: String,
@@ -55,14 +125,44 @@ const qaSchema = new mongoose.Schema({
 
 // Migration (Moment)
 
+// const migrationSchema = new mongoose.Schema({
+//   title: String,
+//   subtitle: String,
+//   description: {
+//     type: [[InlineContentSchema]],
+//     default: [],
+//   },
+//   section: [
+//     {
+//       nationalpark: String,
+//       details: {
+//         type: [[InlineContentSchema]],
+//         default: [],
+//       },
+//       image: String,
+//       imagePublicId: String,
+//     },
+//   ],
+// });
+
 const migrationSchema = new mongoose.Schema({
   title: String,
   subtitle: String,
-  description: [contentBlockSchema],
+
+  description: {
+    type: String,
+    default: "",
+  },
+
   section: [
     {
       nationalpark: String,
-      details: [contentBlockSchema],
+
+      details: {
+        type: String,
+        default: "",
+      },
+
       image: String,
       imagePublicId: String,
     },
@@ -82,7 +182,7 @@ const destinationdetailsSchema = new mongoose.Schema(
     destination: String,
     image: String,
     imagePublicId: String,
-    landingImage: String, 
+    landingImage: String,
     landingImagePublicId: String,
 
     aboutBooking: [qaSchema],

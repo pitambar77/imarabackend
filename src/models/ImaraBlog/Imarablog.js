@@ -163,11 +163,7 @@ const SectionSchema = new Schema(
       default: undefined,
     },
 
-    /* ===== PACKAGE ===== */
-    // packageType: {
-    //   type: String,
-    //   enum: ["safari", "kilimanjaro", "zanzibar"],
-    // },
+  
 
     destination: String,
     layout: {
