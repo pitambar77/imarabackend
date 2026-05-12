@@ -52,30 +52,10 @@ const contentBlockSchema = new mongoose.Schema({
 //   },
 // });
 
-/* ===========================
-   INLINE CONTENT
-=========================== */
-// const InlineContentSchema = new Schema(
-//   {
-//     type: {
-//       type: String,
-//       enum: ["text", "link", "bold", "highlight"],
-//       required: true,
-//     },
-//     value: String,
-//     url: String,
-//   },
-//   { _id: false },
-// );
-
 const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  // ✅ Rich text paragraph support
-  // description: {
-  //   type: [[InlineContentSchema]],
-  //   default: [],
-  // },
+
   description: {
     type: String,
     default: "",
@@ -120,30 +100,13 @@ const adventureSchema = new mongoose.Schema({
 
 const qaSchema = new mongoose.Schema({
   question: { type: String, required: true },
-  answer: [contentBlockSchema], // multiple answer parts (header, paragraph, list)
+  answer: {
+    type: String,
+    default: "",
+  },
 });
 
 // Migration (Moment)
-
-// const migrationSchema = new mongoose.Schema({
-//   title: String,
-//   subtitle: String,
-//   description: {
-//     type: [[InlineContentSchema]],
-//     default: [],
-//   },
-//   section: [
-//     {
-//       nationalpark: String,
-//       details: {
-//         type: [[InlineContentSchema]],
-//         default: [],
-//       },
-//       image: String,
-//       imagePublicId: String,
-//     },
-//   ],
-// });
 
 const migrationSchema = new mongoose.Schema({
   title: String,

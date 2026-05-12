@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 
 const contentBlockSchema = new mongoose.Schema({
@@ -9,7 +8,10 @@ const contentBlockSchema = new mongoose.Schema({
 const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  description: [contentBlockSchema],
+  description: {
+    type: String,
+    default: "",
+  },
   image: String,
   imagePublicId: { type: String },
 });
@@ -21,7 +23,10 @@ const highlightsSchema = new mongoose.Schema({
   section: [
     {
       title: String,
-      description: String,
+      description: {
+        type: String,
+        default: "",
+      },
       image: String,
       imagePublicId: { type: String },
     },
@@ -32,7 +37,10 @@ const besttimeSchema = new mongoose.Schema({
   section: [
     {
       month: String,
-      content: String,
+      content: {
+        type: String,
+        default: "",
+      },
     },
   ],
 });
@@ -40,14 +48,20 @@ const besttimeSchema = new mongoose.Schema({
 const adventureSchema = new mongoose.Schema({
   title: String,
   subtitle: String,
-  description: String,
+  description: {
+    type: String,
+    default: "",
+  },
   image: String,
   imagePublicId: { type: String },
 });
 
 const qaSchema = new mongoose.Schema({
   question: { type: String, required: true },
-  answer: [contentBlockSchema], // multiple answer parts (header, paragraph, list)
+  answer: {
+    type: String,
+    default: "",
+  }, // multiple answer parts (header, paragraph, list)
 });
 
 // Migration (Moment)
@@ -55,11 +69,17 @@ const qaSchema = new mongoose.Schema({
 const migrationSchema = new mongoose.Schema({
   title: String,
   subtitle: String,
-  description: [contentBlockSchema],
+  description: {
+    type: String,
+    default: "",
+  },
   section: [
     {
       nationalpark: String,
-      details: [contentBlockSchema],
+      details: {
+        type: String,
+        default: "",
+      },
       image: String,
       imagePublicId: String,
     },
@@ -82,7 +102,7 @@ const zanzibarSchema = new mongoose.Schema(
     migration: [migrationSchema],
     adventure: [adventureSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Zanzibar", zanzibarSchema);

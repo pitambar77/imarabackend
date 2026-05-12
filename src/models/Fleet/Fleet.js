@@ -9,14 +9,20 @@ const contentBlockSchema = new mongoose.Schema({
 const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  description: [contentBlockSchema],
+  description: {
+  type: String,
+  default: "",
+},
 
 });
 
 
 const qaSchema = new mongoose.Schema({
   question: { type: String, required: true },
-  answer: [contentBlockSchema], // multiple answer parts (header, paragraph, list)
+  answer: {
+  type: String,
+  default: "",
+}, // multiple answer parts (header, paragraph, list)
 });
 
 

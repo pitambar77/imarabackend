@@ -4,7 +4,10 @@ import mongoose from "mongoose";
 const overviewSchema = new mongoose.Schema({
     title:String,
     subtitle:String,
-    description:String,
+    description:{
+  type: String,
+  default: "",
+},
 })
 
 const contentBlockSchema = new mongoose.Schema({
@@ -15,7 +18,10 @@ const contentBlockSchema = new mongoose.Schema({
 const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  description: [contentBlockSchema],
+  description: {
+  type: String,
+  default: "",
+},
   image: String,
   imagePublicId: { type: String },
 });
@@ -28,7 +34,10 @@ const adventureSchema = new mongoose.Schema({
     {
       title: String,
       subtitle: String,
-      description: String,
+      description: {
+  type: String,
+  default: "",
+},
       image: String,
       imagePublicId: { type: String },
     },
@@ -37,7 +46,10 @@ const adventureSchema = new mongoose.Schema({
 
 const qaSchema = new mongoose.Schema({
   question: { type: String, required: true },
-  answer: [contentBlockSchema], // multiple answer parts (header, paragraph, list)
+  answer: {
+  type: String,
+  default: "",
+}, // multiple answer parts (header, paragraph, list)
 });
 
 
