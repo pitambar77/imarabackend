@@ -30,6 +30,7 @@ import contactuspageRoutes from "./routes/contactuspageRoutes/contactuspageRoute
 import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import blogimaraRoutes from "./routes/blogRoutes/blogimaraRoutes.js";
+import travelguidenewRoutes from "./routes/travelguideRoutes/travelguidenewRoutes.js"
 
 
 dotenv.config();
@@ -73,7 +74,8 @@ app.use("/api/safarilanding", safarilandingRoutes);
 app.use("/api/contactuspage", contactuspageRoutes);
 app.use("/api/imarablog", blogRoutes);
 app.use("/api/search", searchRoutes);
-app.use("/api/blogimara",blogimaraRoutes)
+app.use("/api/blogimara",blogimaraRoutes);
+app.use("/api/travelguide", travelguidenewRoutes);
 
 connectDB();
 const PORT = process.env.PORT || 8000;

@@ -79,6 +79,7 @@ const SectionSchema = new Schema(
         "imageContent",
         "highlight",
         "package",
+        "quote",
         "review",
         "faq",
         "list", // ✅ NEW
@@ -112,6 +113,9 @@ const SectionSchema = new Schema(
       type: String,
       default: "",
     },
+
+    /* ===== QUOTE ===== */
+    quoteAuthor: String,
 
     /* ===== IMAGE ===== */
     image: ImageItemSchema,
