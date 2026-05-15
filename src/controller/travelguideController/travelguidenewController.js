@@ -537,14 +537,6 @@ export const createBlog = async (req, res) => {
   }
 };
 
-/**
- * Get all blogs
- */
-// export const getBlogs = async (req, res) => {
-//   const blogs = await Blog.find().sort({ createdAt: -1 });
-//   return res.json(blogs);
-// };
-
 export const getBlogs = async (req, res) => {
   const blogs = await Travelguide.find().sort({ createdAt: -1 });
 
@@ -555,31 +547,6 @@ export const getBlogs = async (req, res) => {
 
   return res.json(transformed);
 };
-
-/**
- * Get single blog by ID
- * =========================
- */
-// export const getBlogById = async (req, res) => {
-//   try {
-//     const blog = await Blog.findById(req.params.id);
-//     if (!blog) return res.status(404).json({ error: "Blog not found" });
-
-//     const seoData = await Seo.findOne({
-//       referenceId: blog._id,
-//       referenceType: "blog",
-//     });
-
-//     res.json({
-//       ...blog.toObject(), // 👈 spread main document
-//       seo: seoData || null, // 👈 attach seo inside
-//     });
-
-//     // return res.json(blog);
-//   } catch {
-//     return res.status(400).json({ error: "Invalid blog ID" });
-//   }
-// };
 
 export const getBlogById = async (req, res) => {
   try {
@@ -648,9 +615,13 @@ export const updateBlog = async (req, res) => {
 
     if (req.file) updateData.thumbnail = req.file.path;
 
-    const blog = await Travelguide.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-    });
+    const blog = await Travelguide.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+      },
+    );
     return res.json(blog);
   } catch (err) {
     console.error("Update Error:", err.message);
