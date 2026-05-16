@@ -1,29 +1,74 @@
 import mongoose from "mongoose";
 
-const contentBlockSchema = new mongoose.Schema({
-  type: { type: String, enum: ["header", "paragraph", "list"], required: true },
-  content: { type: mongoose.Schema.Types.Mixed, required: true },
-});
+/* ================= FAQ ITEM ================= */
 
-const qaSchema = new mongoose.Schema({
-  question: { type: String, required: true },
-  answer: [contentBlockSchema], // multiple answer parts (header, paragraph, list)
-});
+const qaSchema = new mongoose.Schema(
+  {
+    question: {
+      type: String,
+      default: "",
+    },
 
-const faqSectionSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  subtitle: { type: String },
-  faqs: [qaSchema], // multiple questions inside one section
-});
+    answer: {
+      type: String,
+      default: "",
+    },
+  },
+  { _id: false },
+);
+
+/* ================= FAQ SECTION ================= */
+
+const faqSectionSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      default: "",
+    },
+
+    subtitle: {
+      type: String,
+      default: "",
+    },
+
+    faqs: {
+      type: [qaSchema],
+      default: [],
+    },
+  },
+  { _id: false },
+);
+
+/* ================= HOMEPAGE ================= */
 
 const homepageSchema = new mongoose.Schema(
   {
-    title: String,
-    subtitle: String,
-    bannerImage: String,
-    faq:[faqSectionSchema]
+    title: {
+      type: String,
+      default: "",
+    },
+
+    subtitle: {
+      type: String,
+      default: "",
+    },
+
+    bannerImage: {
+      type: String,
+      default: "",
+    },
+
+    faq: {
+      type: [faqSectionSchema],
+      default: [],
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  },
 );
 
-export default mongoose.model("Homepage", homepageSchema);
+const Homepage =
+  mongoose.models.Homepage || mongoose.model("Homepage", homepageSchema);
+
+export default Homepage;

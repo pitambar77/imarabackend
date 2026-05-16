@@ -1,5 +1,6 @@
-import Contactuspage from "../../models/ContactusPage/Contactuspage.js";
 
+
+import Kilimanjarotravelguidelanding from "../../models/Travelguide/Kilimanjarotravelguidelanding.js";
 import cloudinary from "../../config/cloudinary.js";
 
 /* ================= SAFE PARSE ================= */
@@ -56,7 +57,7 @@ const formatFaq = (faqData) => {
 
 /* ================= CREATE ================= */
 
-export const createContactuspage = async (req, res) => {
+export const createTanzaniadestinationlanding = async (req, res) => {
   try {
     const formDataParsed = JSON.parse(req.body.formData || "{}");
 
@@ -76,7 +77,7 @@ export const createContactuspage = async (req, res) => {
 
     const faq = formatFaq(req.body.faq);
 
-    const newDoc = await Contactuspage.create({
+    const newDoc = await Kilimanjarotravelguidelanding.create({
       ...formDataParsed,
 
       image: mainImage?.path || null,
@@ -89,7 +90,7 @@ export const createContactuspage = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Contactuspage created successfully",
+      message: "Travel Guide Landing created successfully",
       data: newDoc,
     });
   } catch (err) {
@@ -103,9 +104,9 @@ export const createContactuspage = async (req, res) => {
 
 /* ================= GET ALL ================= */
 
-export const getAllContactuspage = async (req, res) => {
+export const getAllTanzaniadestinationlanding = async (req, res) => {
   try {
-    const data = await Contactuspage.find().sort({
+    const data = await Kilimanjarotravelguidelanding.find().sort({
       createdAt: -1,
     });
 
@@ -120,13 +121,13 @@ export const getAllContactuspage = async (req, res) => {
 
 /* ================= GET SINGLE ================= */
 
-export const getContactuspageById = async (req, res) => {
+export const getTanzaniadestinationlandingById = async (req, res) => {
   try {
-    const page = await Contactuspage.findById(req.params.id);
+    const page = await Kilimanjarotravelguidelanding.findById(req.params.id);
 
     if (!page) {
       return res.status(404).json({
-        message: "Contact us page not found",
+        message: "Travel Guide Landing not found",
       });
     }
 
@@ -141,7 +142,7 @@ export const getContactuspageById = async (req, res) => {
 
 /* ================= UPDATE ================= */
 
-export const updateContactuspage = async (req, res) => {
+export const updateTanzaniadestinationlanding = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -169,10 +170,14 @@ export const updateContactuspage = async (req, res) => {
       updateData.imagePublicId = req.files.mainImage[0].filename;
     }
 
-    const updated = await Contactuspage.findByIdAndUpdate(id, updateData, {
-      new: true,
-      runValidators: true,
-    });
+    const updated = await Kilimanjarotravelguidelanding.findByIdAndUpdate(
+      id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
 
     res.json({
       message: "Updated successfully",
@@ -189,13 +194,13 @@ export const updateContactuspage = async (req, res) => {
 
 /* ================= DELETE ================= */
 
-export const deleteContactuspage = async (req, res) => {
+export const deleteTanzaniadestinationlanding = async (req, res) => {
   try {
-    const doc = await Contactuspage.findById(req.params.id);
+    const doc = await Kilimanjarotravelguidelanding.findById(req.params.id);
 
     if (!doc) {
       return res.status(404).json({
-        message: "Contact us page not found",
+        message: "Travel Guide Landing not found",
       });
     }
 
@@ -203,7 +208,7 @@ export const deleteContactuspage = async (req, res) => {
       await cloudinary.uploader.destroy(doc.imagePublicId);
     }
 
-    await Contactuspage.findByIdAndDelete(req.params.id);
+    await Kilimanjarotravelguidelanding.findByIdAndDelete(req.params.id);
 
     res.json({
       message: "Deleted successfully",

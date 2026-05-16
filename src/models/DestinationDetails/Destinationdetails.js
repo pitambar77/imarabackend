@@ -9,48 +9,6 @@ const contentBlockSchema = new mongoose.Schema({
   content: { type: mongoose.Schema.Types.Mixed, required: true },
 });
 
-// const contentBlockSchema = new mongoose.Schema({
-//   type: {
-//     type: String,
-//     enum: [
-//       // OLD TYPES
-//       "header",
-//       "paragraph",
-//       "list",
-
-//       // NEW TYPES
-//       "text",
-//       "bold",
-//       "italic",
-//       "underline",
-//       "highlight",
-//       "link",
-//       "heading",
-//       "quote",
-//       "bullet",
-//       "number",
-//     ],
-//     default: "text",
-//   },
-
-//   // OLD DATA SUPPORT
-//   content: {
-//     type: mongoose.Schema.Types.Mixed,
-//     default: "",
-//   },
-
-//   // NEW DATA SUPPORT
-//   value: {
-//     type: String,
-//     default: "",
-//   },
-
-//   // FOR LINKS
-//   url: {
-//     type: String,
-//     default: "",
-//   },
-// });
 
 const overviewinfoSchema = new mongoose.Schema({
   title: { type: String, required: true },

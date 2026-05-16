@@ -1,9 +1,25 @@
 import express from "express";
-import { getHomepage, saveHomepage } from "../../controller/homePageController/homepageController.js";
+import multer from "multer";
+
+import {
+  getHomepage,
+  saveHomepage,
+} from "../../controller/homePageController/homepageController.js";
 
 const router = express.Router();
 
+/* ================= MULTER ================= */
+
+const upload = multer();
+
+/* ================= ROUTES ================= */
+
 router.get("/", getHomepage);
-router.post("/", saveHomepage);
+
+router.post(
+  "/",
+  upload.none(), // IMPORTANT
+  saveHomepage,
+);
 
 export default router;

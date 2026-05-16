@@ -38,7 +38,7 @@ const faqSectionSchema = new mongoose.Schema(
   { _id: false },
 );
 
-const contactuspageSchema = new mongoose.Schema(
+const tanzaniatravelguidelandingSchema = new mongoose.Schema(
   {
     title: String,
     subtitle: String,
@@ -52,4 +52,7 @@ const contactuspageSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.model("Contactuspage", contactuspageSchema);
+export default mongoose.model(
+  "Tanzaniatravelguidelanding",
+  tanzaniatravelguidelandingSchema,
+);

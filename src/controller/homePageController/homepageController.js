@@ -1,117 +1,106 @@
-
-
 import Homepage from "../../models/HomePage/Homepage.js";
 
-/* SAFE PARSE (reuse everywhere) */
-const safeParse = (value) => {
-  if (!value) return [];
+/* ================= HELPERS ================= */
+
+const safeParse = (value, fallback = []) => {
+  if (!value) return fallback;
+
   try {
-    return typeof value === "string" ? JSON.parse(value) : value;
+    return JSON.parse(value);
   } catch {
-    return [];
+    return fallback;
   }
 };
 
-const transformFaq = (faqSections) => {
-  return faqSections?.map((section) => ({
-    ...section.toObject?.() || section,
+/* ================= CREATE / UPDATE HOMEPAGE ================= */
 
-    faqs: (section.faqs || []).map((faq) => ({
-      ...faq.toObject?.() || faq,
-
-      answerBlocks: (faq.answer || []).map((block) => {
-        if (block.type === "list") {
-          return {
-            type: "list",
-            items: Array.isArray(block.content)
-              ? block.content
-              : [block.content],
-          };
-        }
-
-        return {
-          type: block.type === "header" ? "heading" : block.type,
-          text: block.content,
-        };
-      }),
-
-      // optional: hide original field
-      // answer: undefined,
-    })),
-  }));
-};
-
-/* FORMAT FAQ STRUCTURE */
-const formatFaq = (faqData) => {
-  return safeParse(faqData).map((section) => ({
-    title: section.title,
-    subtitle: section.subtitle || "",
-    faqs: (section.faqs || []).map((item) => ({
-      question: item.question,
-      answer: (item.answer || []).map((block) => ({
-        type: block.type,
-        content: block.content,
-      })),
-    })),
-  }));
-};
-
-/* GET PAGE DATA */
-export const getHomepage = async (req, res) => {
-  try {
-    const data = await Homepage.findOne();
-
-    if (!data) return res.json({});
-
-    const transformed = {
-      ...data.toObject(),
-      faq: transformFaq(data.faq),
-    };
-
-    res.json(transformed);
-
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-/* CREATE / UPDATE PAGE */
 export const saveHomepage = async (req, res) => {
   try {
-    const { title, subtitle, bannerImage } = req.body;
+    /* ================= FORM DATA ================= */
 
-    // ✅ parse FAQ properly
-    const parsedFaq = formatFaq(req.body.faq);
+    const formData = JSON.parse(req.body?.formData || "{}");
 
-    const existing = await Homepage.findOne();
+    /* ================= FAQ ================= */
+
+    const faq = safeParse(req.body.faq).map((section) => ({
+      title: section.title || "",
+      subtitle: section.subtitle || "",
+
+      faqs: (section.faqs || []).map((item) => ({
+        question: item.question || "",
+        answer: item.answer || "",
+      })),
+    }));
+
+    /* ================= PAYLOAD ================= */
 
     const payload = {
-      title,
-      subtitle,
-      bannerImage,
-      faq: parsedFaq,
+      ...formData,
+
+      faq,
     };
 
-    if (existing) {
-      const updated = await Homepage.findByIdAndUpdate(existing._id, payload, {
-        new: true,
-        runValidators: true,
-      });
+    /* ================= FIND EXISTING ================= */
 
-      return res.json({
+    const existingHomepage = await Homepage.findOne();
+
+    /* ================= UPDATE ================= */
+
+    if (existingHomepage) {
+      const updatedHomepage = await Homepage.findByIdAndUpdate(
+        existingHomepage._id,
+        payload,
+        {
+          new: true,
+          runValidators: true,
+        },
+      );
+
+      return res.status(200).json({
+        success: true,
         message: "Homepage updated successfully",
-        data: updated,
+        data: updatedHomepage,
       });
     }
 
-    const created = await Homepage.create(payload);
+    /* ================= CREATE ================= */
+
+    const createdHomepage = await Homepage.create(payload);
 
     res.status(201).json({
+      success: true,
       message: "Homepage created successfully",
-      data: created,
+      data: createdHomepage,
     });
   } catch (error) {
     console.error("❌ HOMEPAGE ERROR:", error);
-    res.status(400).json({ message: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/* ================= GET HOMEPAGE ================= */
+
+export const getHomepage = async (req, res) => {
+  try {
+    const homepage = await Homepage.findOne().sort({
+      createdAt: -1,
+    });
+
+    if (!homepage) {
+      return res.status(200).json({});
+    }
+
+    res.status(200).json(homepage);
+  } catch (error) {
+    console.error("❌ GET HOMEPAGE ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
