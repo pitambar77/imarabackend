@@ -220,6 +220,7 @@ export const updateKilimanjarolanding = async (req, res) => {
     const adventureImages = req.files?.adventureImages || [];
     const whenvisitImages = req.files?.whenvisitImages || [];
     const relatedsectionImages = req.files?.relatedsectionImages || [];
+    const travelguideImages = req.files?.travelguideImages || [];
 
     let adventureImgIndex = 0;
     let whenvisitImgIndex = 0;
@@ -308,6 +309,69 @@ export const updateKilimanjarolanding = async (req, res) => {
             inner.imagePublicId ||
             null,
         })),
+      }),
+    );
+
+    let tgImageIndex = 0;
+
+    updateData.travelguide = safeParse(req.body.travelguide).map((block) => ({
+      ...block,
+
+      description: cleanHTML(block.description || ""),
+
+      section: (block.section || []).map((inner) => {
+        let image = inner.image || null;
+        let imagePublicId = inner.imagePublicId || null;
+
+        // ONLY replace when new image uploaded
+        if (inner.hasNewImage && travelguideImages[tgImageIndex]) {
+          image = travelguideImages[tgImageIndex].path;
+          imagePublicId = travelguideImages[tgImageIndex].filename;
+
+          tgImageIndex++;
+        }
+
+        return {
+          ...inner,
+
+          description: cleanHTML(inner.description || ""),
+
+          image,
+          imagePublicId,
+        };
+      }),
+    }));
+
+    let relatedImageIndex = 0;
+
+    updateData.relatedsection = safeParse(req.body.relatedsection).map(
+      (block) => ({
+        ...block,
+
+        section: (block.section || []).map((inner) => {
+          let image = inner.image || null;
+          let imagePublicId = inner.imagePublicId || null;
+
+          // ONLY replace when new image uploaded
+          if (inner.hasNewImage && relatedsectionImages[relatedImageIndex]) {
+            image = relatedsectionImages[relatedImageIndex].path;
+
+            imagePublicId = relatedsectionImages[relatedImageIndex].filename;
+
+            relatedImageIndex++;
+          }
+
+          const { newImage, hasNewImage, imagePreview, ...cleanInner } = inner;
+
+          return {
+            ...cleanInner,
+
+            description: cleanHTML(inner.description || ""),
+
+            image,
+            imagePublicId,
+          };
+        }),
       }),
     );
 

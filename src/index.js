@@ -30,12 +30,15 @@ import contactuspageRoutes from "./routes/contactuspageRoutes/contactuspageRoute
 import blogRoutes from "./routes/blogRoutes/blogRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import blogimaraRoutes from "./routes/blogRoutes/blogimaraRoutes.js";
-import travelguidenewRoutes from "./routes/travelguideRoutes/travelguidenewRoutes.js"
+import travelguidenewRoutes from "./routes/travelguideRoutes/travelguidenewRoutes.js";
 import tanzaniadestinationlandingRoutes from "./routes/destinationlandingRoutes/tanzaniadestinationlandingRoutes.js";
-import mountkilimanjaroRoutes from './routes/kilimanjarolandingRoutes/mountkilimanjaroRoutes.js'
-import tanzaniatravelguidelandingRoutes from './routes/travelguideRoutes/tanzaniatravelguidelandingRoutes.js'
-import kilimanjarotravelguidelandingRoutes from './routes/travelguideRoutes/kilimanjarotravelguidelandingRoutes.js'
-import bloglandingRoutes from './routes/blogRoutes/bloglandingRoutes.js'
+import mountkilimanjaroRoutes from "./routes/kilimanjarolandingRoutes/mountkilimanjaroRoutes.js";
+import tanzaniatravelguidelandingRoutes from "./routes/travelguideRoutes/tanzaniatravelguidelandingRoutes.js";
+import kilimanjarotravelguidelandingRoutes from "./routes/travelguideRoutes/kilimanjarotravelguidelandingRoutes.js";
+import bloglandingRoutes from "./routes/blogRoutes/bloglandingRoutes.js";
+import corevalueRoutes from "./routes/corevalueRoutes/corevalueRoutes.js"
+import privacypolicyRoutes from "./routes/privacypolicyRoutes/privacypolicyRoutes.js"
+import termsconditionRoutes from "./routes/termsconditionRoutes/termsconditionRoutes.js"
 
 
 dotenv.config();
@@ -79,13 +82,20 @@ app.use("/api/safarilanding", safarilandingRoutes);
 app.use("/api/contactuspage", contactuspageRoutes);
 app.use("/api/imarablog", blogRoutes);
 app.use("/api/search", searchRoutes);
-app.use("/api/blogimara",blogimaraRoutes);
+app.use("/api/blogimara", blogimaraRoutes);
 app.use("/api/travelguide", travelguidenewRoutes);
 app.use("/api/tanzaniadestinationlanding", tanzaniadestinationlandingRoutes);
 app.use("/api/mountkilimanjaro", mountkilimanjaroRoutes);
-app.use("/api/tanzaniatravelguidelanding",tanzaniatravelguidelandingRoutes);
-app.use("/api/kilimanjarotravelguidelanding",kilimanjarotravelguidelandingRoutes);
-app.use("/api/bloglanding",bloglandingRoutes);
+app.use("/api/tanzaniatravelguidelanding", tanzaniatravelguidelandingRoutes);
+app.use(
+  "/api/kilimanjarotravelguidelanding",
+  kilimanjarotravelguidelandingRoutes,
+);
+app.use("/api/bloglanding", bloglandingRoutes);
+app.use("/api/corevalue", corevalueRoutes);
+app.use("/api/privacypolicy", privacypolicyRoutes);
+app.use("/api/termscondition",termsconditionRoutes);
+
 
 connectDB();
 const PORT = process.env.PORT || 8000;
