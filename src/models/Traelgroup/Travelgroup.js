@@ -43,6 +43,8 @@ const travelgroupSchema = new mongoose.Schema(
     slug: { type: String, unique: true },
     image: String,
     imagePublicId: String,
+    FaqTitle:String,
+    FaqSubTitle:String,
 
     aboutBooking: [qaSchema],
 

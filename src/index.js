@@ -39,6 +39,8 @@ import bloglandingRoutes from "./routes/blogRoutes/bloglandingRoutes.js";
 import corevalueRoutes from "./routes/corevalueRoutes/corevalueRoutes.js"
 import privacypolicyRoutes from "./routes/privacypolicyRoutes/privacypolicyRoutes.js"
 import termsconditionRoutes from "./routes/termsconditionRoutes/termsconditionRoutes.js"
+import enquiryformpageRoutes from "./routes/enquiryformpageRoutes/enquiryformpageRoutes.js"
+
 
 
 dotenv.config();
@@ -95,6 +97,7 @@ app.use("/api/bloglanding", bloglandingRoutes);
 app.use("/api/corevalue", corevalueRoutes);
 app.use("/api/privacypolicy", privacypolicyRoutes);
 app.use("/api/termscondition",termsconditionRoutes);
+app.use("/api/enquirytours",enquiryformpageRoutes);
 
 
 connectDB();
