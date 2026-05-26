@@ -86,7 +86,7 @@ const sendEnquiryForm = async (req, res) => {
 <table width="100%">
 <tr>
 <td>
-<img src="https://imarakilelenisafaris.com/src/assets/imaralogo.png" height="50"/>
+<img src="https://imarakilelenisafaris.com/_next/static/media/imaralogo.0g8.1.bc43or-.png" height="50"/>
 </td>
 <td align="right" style="font-size:18px;font-weight:bold;color:#d87028;">
 Imara Kileleni Safaris
@@ -181,7 +181,7 @@ Regards,<br/>
 <table width="100%">
 <tr>
 <td align="left">
-<img src="https://imarakilelenisafaris.com/src/assets/imaralogo.png" height="50"/>
+<img src="https://imarakilelenisafaris.com/_next/static/media/imaralogo.0g8.1.bc43or-.png" height="50"/>
 </td>
 
 <td align="right" style="font-size:18px;font-weight:bold;color:#d87028;">

@@ -2,49 +2,81 @@ import transporter from "../../config/mailer.js";
 import axios from "axios";
 import { getZohoAccessToken } from "../../utils/zohoToken.js";
 
-const sendItneraryForm = async (req, res) => {
+const sendTanzaniaTailormadeSafari = async (req, res) => {
   try {
     const {
-      formType,
       name,
       phone,
-      email,
+      countryCode,
       country,
+      email,
       adults,
       children,
-      packageName,
-      tourType,
+      destination,
       travelDate,
       days,
       message,
     } = req.body;
 
+    /* ================= VALIDATION ================= */
+
+    if (!name || !email || !phone) {
+      return res.status(400).json({
+        message: "Required fields are missing",
+      });
+    }
+
     if (!process.env.ADMIN_EMAIL) {
       throw new Error("ADMIN_EMAIL not defined");
     }
+
+    /* ================= HANDLE DESTINATION ARRAY ================= */
+
+    const destinationText = Array.isArray(destination)
+      ? destination.join(", ")
+      : destination;
+
+    /* ================= NAME SPLIT ================= */
+
+    // const fullName = name.trim().split(" ");
+    // const first_name = fullName[0] || "";
+    // const last_name = fullName || "Safari Guest";
+
+    const first_name = name;
+    const last_name = name;
 
     /* ================= ZOHO CRM ================= */
 
     try {
       const accessToken = await getZohoAccessToken();
 
-      await axios.post(
+      const formattedDate = travelDate
+        ? new Date(travelDate).toISOString().split("T")[0]
+        : null;
+
+      const zohoResponse = await axios.post(
         "https://www.zohoapis.com/crm/v2/Leads",
         {
           data: [
             {
-              Last_Name: name,
+              Last_Name: last_name,
+              First_Name: first_name,
               Email: email,
               Phone: phone,
-              Residency_Country: country,
-              Destination_Package: packageName,
-              Tour_Type: tourType,
-              Travel_Days:Number(days),
-              Arrival_Date: travelDate,
-              Adaults:Number(adults),
-              Children:Number(children),
+
               Description: message,
-              Lead_Source: "Website Itinerary form Form",
+
+              Residency_Country: country,
+              Destination_Package: destinationText,
+
+              Travel_Days: Number(days),
+
+              Arrival_Date: formattedDate,
+
+              Adaults: Number(adults),
+              Children: Number(children),
+
+              Lead_Source: "Tanzania Tailormade Safari Form",
             },
           ],
         },
@@ -55,7 +87,7 @@ const sendItneraryForm = async (req, res) => {
         },
       );
 
-      console.log("Zoho Lead Created");
+      console.log("Zoho Lead Created:", zohoResponse.data);
     } catch (zohoError) {
       console.error(
         "Zoho CRM Error:",
@@ -69,11 +101,12 @@ const sendItneraryForm = async (req, res) => {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
       to: process.env.ADMIN_EMAIL,
       replyTo: email,
-      subject: "New Travel Inquiry Received",
+      subject: "New Tanzania Tailormade Safari Inquiry",
       html: `
 <!DOCTYPE html>
 <html>
 <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
+
 <table width="100%" cellpadding="0" cellspacing="0">
 <tr>
 <td align="center" style="padding:20px 0;">
@@ -88,6 +121,7 @@ const sendItneraryForm = async (req, res) => {
 <td>
 <img src="https://imarakilelenisafaris.com/_next/static/media/imaralogo.0g8.1.bc43or-.png" height="50"/>
 </td>
+
 <td align="right" style="font-size:18px;font-weight:bold;color:#d87028;">
 Imara Kileleni Safaris
 </td>
@@ -100,33 +134,33 @@ Imara Kileleni Safaris
 <tr>
 <td style="padding:25px;color:#333;">
 
-<p><strong>New Travel Inquiry received</strong></p>
-<p><strong>Form Source:</strong> ${formType}</p>
+<p><strong>New Tanzania Tailormade Safari inquiry received</strong></p>
 
-<h3>Trip Details</h3>
+<h3>Safari Details</h3>
+
 <ul>
-<li><strong>Destination/Package:</strong> ${packageName}</li>
-<li><strong>Tour Type:</strong> ${tourType}</li>
+<li><strong>Preferred Destination:</strong> ${destinationText}</li>
 <li><strong>Travel Date:</strong> ${travelDate}</li>
-<li><strong>Duration:</strong> ${days} Days</li>
-</ul>
-
-<h3>Traveler Information</h3>
-<ul>
-<li><strong>Name:</strong> ${name}</li>
-<li><strong>Email:</strong> ${email}</li>
-<li><strong>Phone:</strong> ${phone}</li>
-<li><strong>Country:</strong> ${country}</li>
+<li><strong>Number of Days:</strong> ${days}</li>
 <li><strong>Adults:</strong> ${adults}</li>
 <li><strong>Children:</strong> ${children}</li>
 </ul>
 
-<h3>Client Message</h3>
+<h3>Guest Information</h3>
+
+<ul>
+<li><strong>Name:</strong> ${name}</li>
+<li><strong>Email:</strong> ${email}</li>
+<li><strong>Phone:</strong> ${phone}</li>
+<li><strong>Country Code:</strong> ${countryCode}</li>
+<li><strong>Country:</strong> ${country}</li>
+</ul>
+
+<h3>Traveler Message</h3>
 
 <p style="background:#f9f9f9;padding:15px;border-left:4px solid #d6b48c;">
 ${message || "No message provided"}
 </p>
-
 
 <p>
 Regards,<br/>
@@ -148,9 +182,10 @@ Regards,<br/>
 </td>
 </tr>
 </table>
+
 </body>
 </html>
-`,
+      `,
     };
 
     /* ================= CUSTOMER EMAIL ================= */
@@ -158,13 +193,13 @@ Regards,<br/>
     const customerMail = {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
       to: email,
-      subject: "Thank you for your Travel Inquiry",
+      subject: "Thank You for Your Tanzania Safari Inquiry",
       html: `
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>Travel Inquiry Confirmation</title>
+<title>Safari Inquiry Confirmation</title>
 </head>
 
 <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
@@ -180,13 +215,19 @@ Regards,<br/>
 <td style="padding:20px;border-bottom:2px solid #d6b48c;">
 <table width="100%">
 <tr>
+
 <td align="left">
-<img src="https://imarakilelenisafaris.com/_next/static/media/imaralogo.0g8.1.bc43or-.png" height="50"/>
+<img
+src="https://imarakilelenisafaris.com/_next/static/media/imaralogo.0g8.1.bc43or-.png"
+alt="Imara Kileleni Safaris"
+style="height:50px;"
+/>
 </td>
 
 <td align="right" style="font-size:18px;font-weight:bold;color:#d87028;">
 Imara Kileleni Safaris
 </td>
+
 </tr>
 </table>
 </td>
@@ -197,23 +238,25 @@ Imara Kileleni Safaris
 <td style="padding:25px;color:#333;">
 
 <h2 style="color:#d87028;margin-top:0;">
-Thank you, ${name}!
+Thank you, ${first_name}!
 </h2>
 
 <p>
-We have successfully received your travel inquiry.
-Our safari specialists are currently reviewing your request and will contact you shortly with a personalized itinerary.
+We have successfully received your
+<strong>Tanzania Tailormade Safari inquiry</strong>.
+Our safari specialists are reviewing your preferences and will contact you shortly with a personalized itinerary.
 </p>
 
 <h3 style="border-bottom:1px solid #ddd;padding-bottom:6px;">
-Your Trip Details
+Your Safari Details
 </h3>
 
 <ul style="padding-left:20px;">
-<li><strong>Destination/Package:</strong> ${packageName}</li>
-<li><strong>Tour Type:</strong> ${tourType}</li>
+<li><strong>Preferred Destination:</strong> ${destinationText}</li>
 <li><strong>Travel Date:</strong> ${travelDate}</li>
-<li><strong>Duration:</strong> ${days} Days</li>
+<li><strong>Number of Days:</strong> ${days}</li>
+<li><strong>Adults:</strong> ${adults}</li>
+<li><strong>Children:</strong> ${children}</li>
 </ul>
 
 <p style="margin-top:20px;">
@@ -221,8 +264,8 @@ If you have additional preferences or questions, simply reply to this email and 
 </p>
 
 <p style="margin-top:25px;">
-Warm regards,<br/>
-<strong>Imara Kileleni Safaris Team</strong><br/>
+Warm regards,<br />
+<strong>Imara Kileleni Safaris Team</strong><br />
 Tanzania
 </p>
 
@@ -232,7 +275,7 @@ Tanzania
 <!-- FOOTER -->
 <tr>
 <td style="background:#d87028;padding:15px;text-align:center;color:#ffffff;font-size:13px;">
-© 2026 – 2027 Imara Kileleni Safaris<br/>
+© 2026 – 2027 Imara Kileleni Safaris<br />
 Tanzania
 </td>
 </tr>
@@ -245,8 +288,10 @@ Tanzania
 
 </body>
 </html>
-`,
+      `,
     };
+
+    /* ================= SEND EMAILS ================= */
 
     await Promise.all([
       transporter.sendMail(adminMail),
@@ -254,12 +299,15 @@ Tanzania
     ]);
 
     res.status(200).json({
-      message: "Travel inquiry sent successfully",
+      message: "Tanzania Tailormade Safari inquiry sent successfully",
     });
   } catch (error) {
-    console.error("Inquiry Error:", error.message);
-    res.status(500).json({ message: error.message });
+    console.error("Tailormade safari error:", error.message);
+
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-export default sendItneraryForm;
+export default sendTanzaniaTailormadeSafari;
