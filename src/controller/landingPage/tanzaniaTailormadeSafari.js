@@ -5,7 +5,8 @@ import { getZohoAccessToken } from "../../utils/zohoToken.js";
 const sendTanzaniaTailormadeSafari = async (req, res) => {
   try {
     const {
-      name,
+      firstname,
+      lastname,
       phone,
       countryCode,
       country,
@@ -20,7 +21,7 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
 
     /* ================= VALIDATION ================= */
 
-    if (!name || !email || !phone) {
+    if (!firstname || !lastname || !email || !phone) {
       return res.status(400).json({
         message: "Required fields are missing",
       });
@@ -42,8 +43,8 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
     // const first_name = fullName[0] || "";
     // const last_name = fullName || "Safari Guest";
 
-    const first_name = name;
-    const last_name = name;
+    const first_name = firstname;
+    const last_name = lastname;
 
     /* ================= ZOHO CRM ================= */
 
@@ -149,7 +150,7 @@ Imara Kileleni Safaris
 <h3>Guest Information</h3>
 
 <ul>
-<li><strong>Name:</strong> ${name}</li>
+<li><strong>Name:</strong> ${firstname}</li>
 <li><strong>Email:</strong> ${email}</li>
 <li><strong>Phone:</strong> ${phone}</li>
 <li><strong>Country Code:</strong> ${countryCode}</li>

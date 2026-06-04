@@ -1,15 +1,5 @@
 import Seo from "../../models/Seo/Seo.js";
 
-// ✅ CREATE SEO
-// export const createSEO = async (req, res) => {
-//   try {
-//     const seo = await Seo.create(req.body);
-//     res.status(201).json(seo);
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
-// };
-
 export const createSEO = async (req, res) => {
   try {
     const { referenceId, referenceType } = req.body;
