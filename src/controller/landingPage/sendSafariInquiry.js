@@ -4,80 +4,124 @@ import { getZohoAccessToken } from "../../utils/zohoToken.js";
 
 const sendSafariInquiry = async (req, res) => {
   try {
+    // const {
+    //   safari_days,
+    //   safari_type,
+    //   start_date,
+    //   first_name,
+    //   last_name,
+    //   email,
+    //   country,
+    //   adults,
+    //   child,
+    //   number,
+    //   message,
+    // } = req.body;
+
     const {
-      safari_days,
-      safari_type,
-      start_date,
-      first_name,
-      last_name,
+      firstname,
+      lastname,
       email,
+      phone,
       country,
+      countryCode,
+      countryOfResidence,
       adults,
-      child,
-      number,
+      children,
+      destinations,
+      days,
+      travelStyle,
+      travelDate,
       message,
     } = req.body;
 
-    const destination = req.body.destination || req.body["destination[]"];
+    // const destination = req.body.destination || req.body["destination[]"];
 
     if (!process.env.ADMIN_EMAIL) {
       throw new Error("ADMIN_EMAIL not defined");
     }
 
-     /* ================= HANDLE DESTINATION ARRAY ================= */
-    const destinationText = Array.isArray(destination)
-      ? destination.join(", ")
-      : destination;
+    /* ================= HANDLE DESTINATION ARRAY ================= */
+    // const destinationText = Array.isArray(destination)
+    //   ? destination.join(", ")
+    //   : destination;
 
+    const destinationText = Array.isArray(destinations)
+      ? destinations.join(", ")
+      : destinations;
+
+    const formattedDate = travelDate
+      ? new Date(travelDate).toISOString().split("T")[0]
+      : null;
 
     /* ================= SEND TO ZOHO CRM ================= */
 
-try {
-  const accessToken = await getZohoAccessToken();
+    try {
+      const accessToken = await getZohoAccessToken();
 
-  const formattedDate = start_date
-  ? new Date(start_date).toISOString().split("T")[0]
-  : null;
+      // const formattedDate = start_date
+      //   ? new Date(start_date).toISOString().split("T")[0]
+      //   : null;
 
-  const zohoResponse = await axios.post(
-    "https://www.zohoapis.com/crm/v2/Leads",
-    {
-      data: [
+      const zohoResponse = await axios.post(
+        "https://www.zohoapis.com/crm/v2/Leads",
         {
-          Last_Name: last_name,
-          First_Name: first_name,
-          Email: email,
-          Phone: number,
-          Description: message,
-          Residency_Country: country,
-          Destination_Package: destinationText,
-          // Travel_Days:Number(safari_days),
-          Tour_Type: safari_type,
-           Arrival_Date: formattedDate,
-          Adaults:Number(adults),
-          Children:Number(child),
-          Lead_Source:"Google Ads Form "
+          data: [
+            // {
+            //   Last_Name: last_name,
+            //   First_Name: first_name,
+            //   Email: email,
+            //   Phone: number,
+            //   Description: message,
+            //   Residency_Country: country,
+            //   Destination_Package: destinationText,
+            //   // Travel_Days:Number(safari_days),
+            //   Tour_Type: safari_type,
+            //    Arrival_Date: formattedDate,
+            //   Adaults:Number(adults),
+            //   Children:Number(child),
+            //   Lead_Source:"Google Ads Form "
+            // },
+
+            {
+              Last_Name: lastname,
+              First_Name: firstname,
+              Email: email,
+              Phone: phone,
+              Description: message,
+
+              Residency_Country: countryOfResidence,
+
+              Destination_Package: destinationText,
+
+              Safari_Days: days,
+
+              Safari_Style: travelStyle,
+
+              Arrival_Date: formattedDate,
+
+              Adults: Number(adults),
+
+              Children: Number(children),
+
+              Lead_Source: " Tanzania safaris trips",
+            },
+          ],
         },
-      ],
-    },
-    {
-      headers: {
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-      },
+        {
+          headers: {
+            Authorization: `Zoho-oauthtoken ${accessToken}`,
+          },
+        },
+      );
+
+      console.log("Zoho Lead Created:", zohoResponse.data);
+    } catch (zohoError) {
+      console.error(
+        "Zoho CRM Error:",
+        zohoError.response?.data || zohoError.message,
+      );
     }
-  );
-
-  console.log("Zoho Lead Created:", zohoResponse.data);
-
-} catch (zohoError) {
-  console.error(
-    "Zoho CRM Error:",
-    zohoError.response?.data || zohoError.message
-  );
-}
-
-    
-
 
     /* ================= ADMIN EMAIL ================= */
     const adminMail = {
@@ -113,22 +157,21 @@ Imara Kileleni Safaris
 <h3>Safari Details</h3>
 <ul>
 <li><strong>Preferred Destiation:</strong> ${destinationText}</li>
-<li><strong>Duration:</strong> ${safari_days}</li>
-<li><strong>Safari Style:</strong> ${safari_type}</li>
-<li><strong>Travel Date:</strong> ${start_date}</li>
+<li><strong>Duration:</strong> ${days}</li>
+<li><strong>Safari Style:</strong> ${travelStyle}</li>
+<li><strong>Travel Date:</strong> ${formattedDate}</li>
+<li><strong>Lead Source:</strong>Tanzania safaris trips </li>
 </ul>
 
 <h3>Guest Information</h3>
 <ul>
-<li><strong>First Name:</strong> ${first_name}</li>
-<li><strong>Last Name:</strong> ${last_name}</li>
-
+<li><strong>First Name:</strong> ${firstname}</li>
+<li><strong>Last Name:</strong> ${lastname}</li>
 <li><strong>Email:</strong> ${email}</li>
-<li><strong>Phone:</strong>  ${number}</li>
-<li><strong>Country :</strong> ${country} </li>
-
-<li><strong>Number of Adault:</strong> ${adults}</li>
-<li><strong>Number of Child:</strong> ${child}</li>
+<li><strong>Phone:</strong> ${phone}</li>
+<li><strong>Country of Residency:</strong> ${countryOfResidence}</li>
+<li><strong>Adults:</strong> ${adults}</li>
+<li><strong>Children:</strong> ${children}</li>
 
 </ul>
 
@@ -137,7 +180,7 @@ Imara Kileleni Safaris
 ${message || "No message provided"}
 </p>
 
-<p>Regards,<br/><strong>Website Inquiry System</strong></p>
+<p>Regards,<br/><strong>Imara Kileleni Safaris</strong></p>
 </td>
 </tr>
 
@@ -158,8 +201,8 @@ ${message || "No message provided"}
     /* ================= CUSTOMER CONFIRMATION ================= */
     const customerMail = {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
-      to:email,
-      subject: "Thank you for your Safari Inquiry",
+      to: email,
+      subject: `Thank You, ${firstname} – Your Safari Planning Has Begun`,
       html: `
 <!DOCTYPE html>
 <html>
@@ -201,7 +244,7 @@ ${message || "No message provided"}
             <td style="padding:25px;color:#333;">
               
               <h2 style="color:#d87028;margin-top:0;">
-                Thank you, ${first_name}!
+                Thank you, ${firstname}!
               </h2>
 
               <p>
@@ -216,10 +259,10 @@ ${message || "No message provided"}
               </h3>
 
               <ul style="padding-left:20px;">
-                <li><strong>Preferred destination:</strong> ${destinationText}</li>
-                <li><strong>Safari Duration:</strong> ${safari_days}</li>
-                <li><strong>Safari Style:</strong> ${safari_type}</li>
-                <li><strong>Expected Travel Date:</strong> ${start_date}</li>
+               <li><strong>Preferred Destination:</strong> ${destinationText}</li>
+<li><strong>Safari Duration:</strong> ${days}</li>
+<li><strong>Safari Style:</strong> ${travelStyle}</li>
+<li><strong>Expected Travel Date:</strong> ${formattedDate}</li>
               </ul>
 
               <p style="margin-top:20px;">
@@ -262,7 +305,6 @@ ${message || "No message provided"}
     ]);
 
     res.status(200).json({ message: "Safari inquiry sent successfully" });
-
   } catch (error) {
     console.error("Safari mail error:", error.message);
     res.status(500).json({ message: error.message });
