@@ -102,7 +102,7 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
       to: process.env.ADMIN_EMAIL,
       replyTo: email,
-      subject: "New Tanzania Tailormade Safari Inquiry",
+      subject: " Imara Kileleni Safaris || Tanzania Tailormade Safari Inquiry",
       html: `
 <!DOCTYPE html>
 <html>
@@ -135,7 +135,7 @@ Imara Kileleni Safaris
 <tr>
 <td style="padding:25px;color:#333;">
 
-<p><strong>New Tanzania Tailormade Safari inquiry received</strong></p>
+<p><strong>Imara Kileleni Safaris || Tanzania Tailormade Safari Inquiry Recieve</strong></p>
 
 <h3>Safari Details</h3>
 

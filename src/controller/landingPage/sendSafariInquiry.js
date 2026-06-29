@@ -4,20 +4,6 @@ import { getZohoAccessToken } from "../../utils/zohoToken.js";
 
 const sendSafariInquiry = async (req, res) => {
   try {
-    // const {
-    //   safari_days,
-    //   safari_type,
-    //   start_date,
-    //   first_name,
-    //   last_name,
-    //   email,
-    //   country,
-    //   adults,
-    //   child,
-    //   number,
-    //   message,
-    // } = req.body;
-
     const {
       firstname,
       lastname,
@@ -67,22 +53,6 @@ const sendSafariInquiry = async (req, res) => {
         "https://www.zohoapis.com/crm/v2/Leads",
         {
           data: [
-            // {
-            //   Last_Name: last_name,
-            //   First_Name: first_name,
-            //   Email: email,
-            //   Phone: number,
-            //   Description: message,
-            //   Residency_Country: country,
-            //   Destination_Package: destinationText,
-            //   // Travel_Days:Number(safari_days),
-            //   Tour_Type: safari_type,
-            //    Arrival_Date: formattedDate,
-            //   Adaults:Number(adults),
-            //   Children:Number(child),
-            //   Lead_Source:"Google Ads Form "
-            // },
-
             {
               Last_Name: lastname,
               First_Name: firstname,
@@ -128,7 +98,7 @@ const sendSafariInquiry = async (req, res) => {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
       to: process.env.ADMIN_EMAIL,
       replyTo: email,
-      subject: "New Safari Inquiry Received",
+      subject: "Imara Kileleni Safaris || Tanzania Safari Tour",
       html: `
 <!DOCTYPE html>
 <html>
@@ -152,7 +122,7 @@ Imara Kileleni Safaris
 
 <tr>
 <td style="padding:25px;color:#333;">
-<p><strong>New Safari Inquiry received</strong></p>
+<p><strong>Imara Kileleni Safaris || Tanzania Safari Tour </strong></p>
 
 <h3>Safari Details</h3>
 <ul>
