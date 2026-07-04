@@ -17,6 +17,7 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
       travelDate,
       days,
       message,
+      
     } = req.body;
 
     /* ================= VALIDATION ================= */

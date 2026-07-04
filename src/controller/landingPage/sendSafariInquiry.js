@@ -19,6 +19,7 @@ const sendSafariInquiry = async (req, res) => {
       travelStyle,
       travelDate,
       message,
+      language,
     } = req.body;
 
     // const destination = req.body.destination || req.body["destination[]"];
@@ -45,9 +46,7 @@ const sendSafariInquiry = async (req, res) => {
     try {
       const accessToken = await getZohoAccessToken();
 
-      // const formattedDate = start_date
-      //   ? new Date(start_date).toISOString().split("T")[0]
-      //   : null;
+      
 
       const zohoResponse = await axios.post(
         "https://www.zohoapis.com/crm/v2/Leads",
@@ -74,7 +73,7 @@ const sendSafariInquiry = async (req, res) => {
 
               Children: Number(children),
 
-              Lead_Source: " Tanzania safaris trips",
+              Lead_Source: ` Tanzania safaris trips - ${(language || "EN").toUpperCase()} `,
             },
           ],
         },
@@ -93,12 +92,60 @@ const sendSafariInquiry = async (req, res) => {
       );
     }
 
+    const customerContent = {
+      en: {
+        subject: `Thank You, ${firstname} – Your Safari Planning Has Begun`,
+        greeting: `Thank you, ${firstname}!`,
+        intro:
+          "We have successfully received your Tanzania safari inquiry. Our safari specialists are currently reviewing your preferences and will contact you shortly with a personalized itinerary.",
+        details: "Your Safari Details",
+        destination: "Preferred Destination",
+        duration: "Safari Duration",
+        style: "Safari Style",
+        date: "Expected Travel Date",
+        reply:
+          "If you have additional preferences or questions, simply reply to this email and our team will be happy to assist you.",
+        regards: "Warm regards,",
+      },
+
+      de: {
+        subject: `Vielen Dank, ${firstname}!`,
+        greeting: `Vielen Dank, ${firstname}!`,
+        intro:
+          "Wir haben Ihre Anfrage für eine Tansania-Safari erhalten. Unser Safari-Team wird sich in Kürze mit einem individuellen Reisevorschlag bei Ihnen melden.",
+        details: "Ihre Safari-Details",
+        destination: "Gewünschtes Reiseziel",
+        duration: "Safaridauer",
+        style: "Safari-Art",
+        date: "Reisedatum",
+        reply:
+          "Falls Sie weitere Wünsche oder Fragen haben, antworten Sie einfach auf diese E-Mail.",
+        regards: "Mit freundlichen Grüßen,",
+      },
+
+      fr: {
+        subject: `Merci ${firstname} !`,
+        greeting: `Merci ${firstname} !`,
+        intro:
+          "Nous avons bien reçu votre demande de safari en Tanzanie. Notre équipe vous contactera bientôt avec un itinéraire personnalisé.",
+        details: "Les détails de votre safari",
+        destination: "Destination",
+        duration: "Durée",
+        style: "Style de safari",
+        date: "Date de voyage",
+        reply: "Si vous avez des questions, répondez simplement à cet e-mail.",
+        regards: "Cordialement,",
+      },
+    };
+
+    const content = customerContent[language] || customerContent.en;
+
     /* ================= ADMIN EMAIL ================= */
     const adminMail = {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
       to: process.env.ADMIN_EMAIL,
       replyTo: email,
-      subject: "Imara Kileleni Safaris || Tanzania Safari Tour",
+      subject: `Imara Kileleni Safaris || Tanzania Safari Tour - ${(language || "EN").toUpperCase()}`,
       html: `
 <!DOCTYPE html>
 <html>
@@ -122,7 +169,7 @@ Imara Kileleni Safaris
 
 <tr>
 <td style="padding:25px;color:#333;">
-<p><strong>Imara Kileleni Safaris || Tanzania Safari Tour </strong></p>
+<p><strong>Imara Kileleni Safaris || Tanzania Safari Tour - ${(language || "EN").toUpperCase()} </strong></p>
 
 <h3>Safari Details</h3>
 <ul>
@@ -172,7 +219,7 @@ ${message || "No message provided"}
     const customerMail = {
       from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
       to: email,
-      subject: `Thank You, ${firstname} – Your Safari Planning Has Begun`,
+      subject: content.subject,
       html: `
 <!DOCTYPE html>
 <html>
@@ -214,37 +261,37 @@ ${message || "No message provided"}
             <td style="padding:25px;color:#333;">
               
               <h2 style="color:#d87028;margin-top:0;">
-                Thank you, ${firstname}!
+                ${content.greeting}
               </h2>
 
               <p>
-                We have successfully received your <strong>Tanzania safari inquiry</strong>.
-                Our safari specialists are currently reviewing your preferences and will
-                contact you shortly with a personalized itinerary.
-              </p>
+  ${content.intro}
+</p>
 
               <!-- DETAILS -->
               <h3 style="border-bottom:1px solid #ddd;padding-bottom:6px;">
-                Your Safari Details
+                ${content.details}
               </h3>
 
               <ul style="padding-left:20px;">
-               <li><strong>Preferred Destination:</strong> ${destinationText}</li>
-<li><strong>Safari Duration:</strong> ${days}</li>
-<li><strong>Safari Style:</strong> ${travelStyle}</li>
-<li><strong>Expected Travel Date:</strong> ${formattedDate}</li>
+               <li><strong>${content.destination}:</strong> ${destinationText}</li>
+
+<li><strong>${content.duration}:</strong> ${days}</li>
+
+<li><strong>${content.style}:</strong> ${travelStyle}</li>
+
+<li><strong>${content.date}:</strong> ${formattedDate}</li>
               </ul>
 
               <p style="margin-top:20px;">
-                If you have additional preferences or questions, simply reply to this
-                email and our team will be happy to assist you.
+                ${content.reply}
               </p>
 
-              <p style="margin-top:25px;">
-                Warm regards,<br />
-                <strong>Imara Kileleni Safaris Team</strong><br />
-                Tanzania
-              </p>
+            <p style="margin-top:25px;">
+  ${content.regards}<br />
+  <strong>Imara Kileleni Safaris Team</strong><br />
+  Tanzania
+</p>
 
             </td>
           </tr>
