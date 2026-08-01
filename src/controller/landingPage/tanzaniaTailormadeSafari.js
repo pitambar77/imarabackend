@@ -64,19 +64,19 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
               Last_Name: last_name,
               First_Name: first_name,
               Email: email,
-              Phone: phone,
+              Mobile: phone,
 
               Description: message,
 
               Residency_Country: country,
               Destination_Package: destinationText,
 
-              Travel_Days: Number(days),
+              Travel_Duration: days,
 
-              Arrival_Date: formattedDate,
+              Planning_to_Travel_In: formattedDate,
 
-              Adaults: Number(adults),
-              Children: Number(children),
+              Number_of_Adult: adults,
+              Number_of_Children: children,
 
               Lead_Source: "Tanzania Tailormade Safari Form",
             },

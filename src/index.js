@@ -70,8 +70,9 @@ app.use("/api/contactformkili", contactformkiliRoutes);
 app.use("/api/footer-form", footerFormRoutes);
 
 app.use("/api/kiliform", kiliformRoutes);
-app.use("/api/safariform", safariformRoutes);
 //new landing page
+app.use("/api/safariform", safariformRoutes);
+
 app.use("/api/tanzania-tailormade-safari", tanzniaTailormadeSafariRoutes);
 app.use("/api/seo", seoRoutes);
 

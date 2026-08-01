@@ -56,22 +56,22 @@ const sendSafariInquiry = async (req, res) => {
               Last_Name: lastname,
               First_Name: firstname,
               Email: email,
-              Phone: phone,
+              Mobile: phone,
               Description: message,
 
               Residency_Country: countryOfResidence,
 
               Destination_Package: destinationText,
 
-              Safari_Days: days,
+              Travel_Duration: days,
 
-              Safari_Style: travelStyle,
+              Tour_Type: travelStyle,
 
-              Arrival_Date: formattedDate,
+              Planning_to_Travel_In: formattedDate,
 
-              Adults: Number(adults),
+              Number_of_Adult: adults,
 
-              Children: Number(children),
+              Number_of_Children: children,
 
               Lead_Source: ` Tanzania safaris trips - ${(language || "EN").toUpperCase()} `,
             },
