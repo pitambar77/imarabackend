@@ -17,7 +17,6 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
       travelDate,
       days,
       message,
-      
     } = req.body;
 
     /* ================= VALIDATION ================= */
@@ -71,12 +70,12 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
               Residency_Country: country,
               Destination_Package: destinationText,
 
-              Travel_Duration: days,
+              Travel_Duration: days ? String(days) : "",
 
               Planning_to_Travel_In: formattedDate,
 
-              Number_of_Adult: adults,
-              Number_of_Children: children,
+              Number_of_Adult: adults ? String(adults) : "",
+              Number_of_Children: children ? String(children) : "",
 
               Lead_Source: "Tanzania Tailormade Safari Form",
             },
@@ -89,7 +88,7 @@ const sendTanzaniaTailormadeSafari = async (req, res) => {
         },
       );
 
-      console.log("Zoho Lead Created:", zohoResponse.data);
+      console.log("Zoho Response:", JSON.stringify(zohoResponse.data, null, 2));
     } catch (zohoError) {
       console.error(
         "Zoho CRM Error:",

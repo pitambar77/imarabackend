@@ -46,8 +46,6 @@ const sendSafariInquiry = async (req, res) => {
     try {
       const accessToken = await getZohoAccessToken();
 
-      
-
       const zohoResponse = await axios.post(
         "https://www.zohoapis.com/crm/v2/Leads",
         {
@@ -71,7 +69,7 @@ const sendSafariInquiry = async (req, res) => {
 
               Number_of_Adult: adults,
 
-              Number_of_Children: children,
+              Number_of_Children: children ? String(children) : "",
 
               Lead_Source: ` Tanzania safaris trips - ${(language || "EN").toUpperCase()} `,
             },
@@ -84,7 +82,7 @@ const sendSafariInquiry = async (req, res) => {
         },
       );
 
-      console.log("Zoho Lead Created:", zohoResponse.data);
+      console.log("Zoho Response:", JSON.stringify(zohoResponse.data, null, 2));
     } catch (zohoError) {
       console.error(
         "Zoho CRM Error:",
