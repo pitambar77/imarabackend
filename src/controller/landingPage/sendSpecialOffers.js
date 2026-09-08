@@ -1,0 +1,569 @@
+import transporter from "../../config/mailer.js";
+import axios from "axios";
+import { getZohoAccessToken } from "../../utils/zohoToken.js";
+
+const sendSpecialOffers = async (req, res) => {
+  try {
+    const {
+      firstname,
+      lastname,
+      email,
+      phone,
+      country,
+      countryCode,
+      countryOfResidence,
+      adults,
+      children,
+      destinations,
+      days,
+      travelStyle,
+      travelDate,
+      partySize,
+      message,
+      language,
+      offerName,
+      offerId,
+    } = req.body;
+
+    if (!process.env.ADMIN_EMAIL) {
+      throw new Error("ADMIN_EMAIL not defined");
+    }
+
+    /* ================= HANDLE DESTINATION ARRAY ================= */
+
+    const destinationText = Array.isArray(destinations)
+      ? destinations.join(", ")
+      : destinations;
+
+    const formattedDate = travelDate ? travelDate.split("T")[0] : null;
+
+    /* ================= SEND TO ZOHO CRM ================= */
+
+    try {
+      const accessToken = await getZohoAccessToken();
+
+      const zohoResponse = await axios.post(
+        "https://www.zohoapis.com/crm/v2/Leads",
+        {
+          data: [
+            {
+              Last_Name: lastname,
+              First_Name: firstname,
+              Email: email,
+              Mobile: phone,
+
+              Description: message,
+
+              Residency_Country: countryOfResidence,
+
+              Destination_Package: destinationText,
+
+              Travel_Duration: days,
+
+              Tour_Type: travelStyle,
+              Number_of_Travellers:partySize,
+
+              Planning_to_Travel_In: formattedDate,
+
+              // Zoho field is TEXT
+              Number_of_Adult: adults ? String(adults) : "",
+
+              Number_of_Children: children ? String(children) : "",
+
+              Special_Offer: offerName || "",
+
+              Special_Offer_ID: offerId || "",
+
+              Lead_Source: ` Tanzania Special Offers - ${(language || "EN").toUpperCase()} `,
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Zoho-oauthtoken ${accessToken}`,
+          },
+        },
+      );
+
+      console.log(
+        "Zoho Special Offer Response:",
+        JSON.stringify(zohoResponse.data, null, 2),
+      );
+    } catch (zohoError) {
+      console.error(
+        "Zoho CRM Error:",
+        zohoError.response?.data || zohoError.message,
+      );
+    }
+
+    /* ================= CUSTOMER EMAIL CONTENT ================= */
+
+    const customerContent = {
+      en: {
+        subject: `Thank You, ${firstname} – Your Special Offer Request`,
+        greeting: `Thank you, ${firstname}!`,
+        intro:
+          "We have successfully received your special offer enquiry. Our safari specialists are currently reviewing your request and will contact you shortly with more information.",
+        offer: "Special Offer",
+        details: "Your Safari Details",
+        destination: "Preferred Destination",
+        duration: "Safari Duration",
+        style: "Safari Style",
+        date: "Expected Travel Date",
+        reply:
+          "If you have additional preferences or questions, simply reply to this email and our team will be happy to assist you.",
+        regards: "Warm regards,",
+      },
+
+      de: {
+        subject: `Vielen Dank, ${firstname}!`,
+        greeting: `Vielen Dank, ${firstname}!`,
+        intro:
+          "Wir haben Ihre Anfrage zu unserem Sonderangebot erhalten. Unser Safari-Team wird sich in Kürze mit einem individuellen Reisevorschlag bei Ihnen melden.",
+        offer: "Sonderangebot",
+        details: "Ihre Safari-Details",
+        destination: "Gewünschtes Reiseziel",
+        duration: "Safaridauer",
+        style: "Safari-Art",
+        date: "Reisedatum",
+        reply:
+          "Falls Sie weitere Wünsche oder Fragen haben, antworten Sie einfach auf diese E-Mail.",
+        regards: "Mit freundlichen Grüßen,",
+      },
+
+      fr: {
+        subject: `Merci ${firstname} !`,
+        greeting: `Merci ${firstname} !`,
+        intro:
+          "Nous avons bien reçu votre demande concernant notre offre spéciale. Notre équipe vous contactera bientôt avec plus d'informations.",
+        offer: "Offre spéciale",
+        details: "Les détails de votre safari",
+        destination: "Destination",
+        duration: "Durée",
+        style: "Style de safari",
+        date: "Date de voyage",
+        reply: "Si vous avez des questions, répondez simplement à cet e-mail.",
+        regards: "Cordialement,",
+      },
+    };
+
+    const content = customerContent[language] || customerContent.en;
+
+    /* ================= ADMIN EMAIL ================= */
+
+    const adminMail = {
+      from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
+
+      to: process.env.ADMIN_EMAIL,
+
+      replyTo: email,
+
+      subject: `Imara Kileleni Safaris || Special Offer - ${(language || "EN").toUpperCase()}`,
+
+      html: `
+<!DOCTYPE html>
+<html>
+
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+
+<tr>
+
+<td align="center" style="padding:20px 0;">
+
+<table width="600" style="background:#ffffff;border:1px solid #d6b48c;">
+
+<tr>
+
+<td style="padding:20px;border-bottom:2px solid #d6b48c;">
+
+<table width="100%">
+
+<tr>
+
+<td>
+<img
+  src="https://imarakilelenisafaris.com/_next/static/media/imaralogo.0g8.1.bc43or-.png"
+  height="50"
+  alt="Imara Kileleni Safaris"
+/>
+</td>
+
+<td
+  align="right"
+  style="font-size:18px;font-weight:bold;color:#d87028;"
+>
+Imara Kileleni Safaris
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+
+<tr>
+
+<td style="padding:25px;color:#333;">
+
+<p>
+<strong>
+Imara Kileleni Safaris || Special Offer - ${(language || "").toUpperCase()}
+</strong>
+</p>
+
+<li>
+<strong>Offer ID:</strong>
+${offerId || "N/A"}
+</li>
+
+</ul>
+
+
+<h3>Safari Details</h3>
+
+<ul>
+
+<li>
+<strong>Preferred Destination:</strong>
+${destinationText}
+</li>
+
+<li>
+<strong>Duration:</strong>
+${days}
+</li>
+
+<li>
+<strong>Safari Style:</strong>
+${travelStyle}
+</li>
+<li>
+<strong>Number of Travellers:</strong>
+${partySize}
+</li>
+
+<li>
+<strong>Travel Date:</strong>
+${formattedDate}
+</li>
+
+<li>
+<strong>Lead Source:</strong>
+Tanzania Special Offers
+</li>
+
+</ul>
+
+
+<h3>Guest Information</h3>
+
+<ul>
+
+<li>
+<strong>First Name:</strong>
+${firstname}
+</li>
+
+<li>
+<strong>Last Name:</strong>
+${lastname}
+</li>
+
+<li>
+<strong>Email:</strong>
+${email}
+</li>
+
+<li>
+<strong>Phone:</strong>
+${phone}
+</li>
+
+<li>
+<strong>Country of Residency:</strong>
+${countryOfResidence}
+</li>
+
+<li>
+<strong>Adults:</strong>
+${adults}
+</li>
+
+<li>
+<strong>Children:</strong>
+${children}
+</li>
+
+</ul>
+
+
+<h3>Client Message</h3>
+
+<p
+  style="
+    background:#f9f9f9;
+    padding:15px;
+    border-left:4px solid #d6b48c;
+  "
+>
+${message || "No message provided"}
+</p>
+
+
+<p>
+Regards,<br/>
+<strong>Imara Kileleni Safaris</strong>
+</p>
+
+</td>
+
+</tr>
+
+
+<tr>
+
+<td
+  style="
+    background:#d87028;
+    color:#fff;
+    text-align:center;
+    padding:15px;
+    font-size:13px;
+  "
+>
+© 2026 – 2027 Imara Kileleni Safaris | Tanzania
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>
+      `,
+    };
+
+    /* ================= CUSTOMER CONFIRMATION ================= */
+
+    const customerMail = {
+      from: `"Imara Safaris" <${process.env.MAIL_USER}>`,
+
+      to: email,
+
+      subject: content.subject,
+
+      html: `
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8" />
+
+<title>
+Special Offer Confirmation
+</title>
+
+</head>
+
+
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial, sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+
+<tr>
+
+<td align="center" style="padding:20px 0;">
+
+<table
+  width="600"
+  cellpadding="0"
+  cellspacing="0"
+  style="background:#ffffff;border:1px solid #d6b48c;"
+>
+
+
+<!-- HEADER -->
+
+<tr>
+
+<td style="padding:20px;border-bottom:2px solid #d6b48c;">
+
+<table width="100%">
+
+<tr>
+
+<td align="left">
+
+<img
+  src="https://imarakilelenisafaris.com/_next/static/media/imaralogo.0g8.1.bc43or-.png"
+  alt="Imara Kileleni Safaris"
+  style="height:50px;"
+/>
+
+</td>
+
+<td
+  align="right"
+  style="font-size:18px;font-weight:bold;color:#d87028;"
+>
+Imara Kileleni Safaris
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+
+<!-- BODY -->
+
+<tr>
+
+<td style="padding:25px;color:#333;">
+
+<h2 style="color:#d87028;margin-top:0;">
+${content.greeting}
+</h2>
+
+
+<p>
+${content.intro}
+</p>
+
+
+<!-- DETAILS -->
+
+<h3
+  style="
+    border-bottom:1px solid #ddd;
+    padding-bottom:6px;
+  "
+>
+${content.details}
+</h3>
+
+
+<ul style="padding-left:20px;">
+
+<li>
+<strong>${content.destination}:</strong>
+${destinationText}
+</li>
+
+<li>
+<strong>${content.duration}:</strong>
+${days}
+</li>
+
+<li>
+<strong>${content.style}:</strong>
+${travelStyle}
+</li>
+
+<li>
+<strong>${content.date}:</strong>
+${formattedDate}
+</li>
+
+</ul>
+
+
+<p style="margin-top:20px;">
+${content.reply}
+</p>
+
+
+<p style="margin-top:25px;">
+
+${content.regards}<br />
+
+<strong>
+Imara Kileleni Safaris Team
+</strong>
+
+<br />
+
+Tanzania
+
+</p>
+
+</td>
+
+</tr>
+
+
+<!-- FOOTER -->
+
+<tr>
+
+<td
+  style="
+    background:#d87028;
+    padding:15px;
+    text-align:center;
+    color:#ffffff;
+    font-size:13px;
+  "
+>
+
+© 2026 – 2027 Imara Kileleni Safaris
+<br/>
+Tanzania
+
+</td>
+
+</tr>
+
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>
+      `,
+    };
+
+    /* ================= SEND EMAILS ================= */
+
+    await Promise.all([
+      transporter.sendMail(adminMail),
+      transporter.sendMail(customerMail),
+    ]);
+
+    /* ================= SUCCESS ================= */
+
+    res.status(200).json({
+      message: "Special offer enquiry sent successfully",
+    });
+  } catch (error) {
+    console.error("Special offer mail error:", error.message);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export default sendSpecialOffers;

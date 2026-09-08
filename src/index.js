@@ -41,6 +41,7 @@ import privacypolicyRoutes from "./routes/privacypolicyRoutes/privacypolicyRoute
 import termsconditionRoutes from "./routes/termsconditionRoutes/termsconditionRoutes.js"
 import enquiryformpageRoutes from "./routes/enquiryformpageRoutes/enquiryformpageRoutes.js"
 import tanzniaTailormadeSafariRoutes from "./routes/landingpageRoutes/tanzaniaTailormadeSafariRoutes.js"
+import specialformRoutes from "./routes/landingpageRoutes/specialformRoutes.js"
 
 
 dotenv.config();
@@ -72,6 +73,7 @@ app.use("/api/footer-form", footerFormRoutes);
 app.use("/api/kiliform", kiliformRoutes);
 //new landing page
 app.use("/api/safariform", safariformRoutes);
+app.use("/api/special-offers", specialformRoutes);
 
 app.use("/api/tanzania-tailormade-safari", tanzniaTailormadeSafariRoutes);
 app.use("/api/seo", seoRoutes);
