@@ -42,6 +42,7 @@ import termsconditionRoutes from "./routes/termsconditionRoutes/termsconditionRo
 import enquiryformpageRoutes from "./routes/enquiryformpageRoutes/enquiryformpageRoutes.js"
 import tanzniaTailormadeSafariRoutes from "./routes/landingpageRoutes/tanzaniaTailormadeSafariRoutes.js"
 import specialformRoutes from "./routes/landingpageRoutes/specialformRoutes.js"
+import kilimanjaroRoutes from "./routes/landingpageRoutes/kilimanjaroRoutes.js"
 
 
 dotenv.config();
@@ -74,6 +75,7 @@ app.use("/api/kiliform", kiliformRoutes);
 //new landing page
 app.use("/api/safariform", safariformRoutes);
 app.use("/api/special-offers", specialformRoutes);
+app.use("/api/kilimanjaro-quote", kilimanjaroRoutes);
 
 app.use("/api/tanzania-tailormade-safari", tanzniaTailormadeSafariRoutes);
 app.use("/api/seo", seoRoutes);
