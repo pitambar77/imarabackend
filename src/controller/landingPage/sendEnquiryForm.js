@@ -23,12 +23,21 @@ const sendEnquiryForm = async (req, res) => {
       throw new Error("ADMIN_EMAIL not defined");
     }
 
+    const formName = formType?.trim().toLowerCase();
+
+    const leadSource =
+      formName === "contact us"
+        ? "Website Contact Form"
+        : formName === "kilimanjaro form"
+          ? "Website Kilimanjaro Form"
+          : "Website Tailormade Form";
+
     /* ================= ZOHO CRM ================= */
 
     try {
       const accessToken = await getZohoAccessToken();
 
-      await axios.post(
+      const zohoResponse = await axios.post(
         "https://www.zohoapis.com/crm/v2/Leads",
         {
           data: [
@@ -39,12 +48,12 @@ const sendEnquiryForm = async (req, res) => {
               Residency_Country: country,
               Destination_Package: destination,
               Tour_Type: tourType,
-              Travel_Duration:days,
+              Travel_Duration: days,
               Planning_to_Travel_In: travelDate,
-              Number_of_Adult:adults,
-              Number_of_Children:children,
+              Number_of_Adult: adults,
+              Number_of_Children: children,
               Description: message,
-              Lead_Source: "Website Tailormade Form",
+              Lead_Source: leadSource,
             },
           ],
         },
@@ -55,7 +64,15 @@ const sendEnquiryForm = async (req, res) => {
         },
       );
 
-      console.log("Zoho Lead Created");
+      console.log("ZOHO RESPONSE:", JSON.stringify(zohoResponse.data, null, 2));
+
+      const zohoResult = zohoResponse.data?.data?.[0];
+
+      if (zohoResult?.status === "success") {
+        console.log("✅ Zoho Lead Created:", zohoResult.details?.id);
+      } else {
+        console.error("❌ Zoho Lead Creation Failed:", zohoResponse.data);
+      }
     } catch (zohoError) {
       console.error(
         "Zoho CRM Error:",
