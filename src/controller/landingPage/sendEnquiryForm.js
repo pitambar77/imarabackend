@@ -17,6 +17,7 @@ const sendEnquiryForm = async (req, res) => {
       travelDate,
       days,
       message,
+      captchaToken,
     } = req.body;
 
     if (!process.env.ADMIN_EMAIL) {
@@ -31,6 +32,60 @@ const sendEnquiryForm = async (req, res) => {
         : formName === "kilimanjaro form"
           ? "Website Kilimanjaro Form"
           : "Website Tailormade Form";
+
+
+/* ================= CAPTCHA VERIFICATION ================= */
+
+if (!captchaToken) {
+  return res.status(400).json({
+    message: "Please complete the CAPTCHA verification.",
+  });
+}
+
+if (!process.env.RECAPTCHA_SECRET_KEY) {
+  throw new Error("RECAPTCHA_SECRET_KEY not defined");
+}
+
+try {
+  const captchaVerification = await axios.post(
+    "https://www.google.com/recaptcha/api/siteverify",
+    new URLSearchParams({
+      secret: process.env.RECAPTCHA_SECRET_KEY,
+      response: captchaToken,
+      // Remote IP is optional
+      ...(req.ip ? { remoteip: req.ip } : {}),
+    }),
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      timeout: 10000,
+    }
+  );
+
+  if (captchaVerification.data?.success !== true) {
+    console.error(
+      "CAPTCHA Failed:",
+      captchaVerification.data?.["error-codes"]
+    );
+
+    return res.status(400).json({
+      message: "CAPTCHA verification failed. Please try again.",
+    });
+  }
+
+  console.log("CAPTCHA verified successfully");
+
+} catch (captchaError) {
+  console.error(
+    "CAPTCHA Verification Error:",
+    captchaError.response?.data || captchaError.message
+  );
+
+  return res.status(503).json({
+    message: "Unable to verify CAPTCHA. Please try again later.",
+  });
+}
 
     /* ================= ZOHO CRM ================= */
 
